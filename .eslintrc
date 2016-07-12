@@ -1,0 +1,21 @@
+{
+	"extends": "airbnb/base",
+	"rules": {
+		"comma-dangle": 1,
+		"semi": [2, "never"],
+		"prefer-const": 0,
+		"camelcase": 0,
+		"no-console": 0,
+		"space-before-function-paren": [1, "never"],
+		"spaced-comment": [1, "always", { "exceptions": ["@ngInject"] }],
+		"indent": [2, "tab", {"SwitchCase": 1}],
+		"object-shorthand": 0,
+		"func-names": 0,
+		"consistent-return": 1,
+		"max-len": [1, 120, 2],
+		"no-use-before-define": 1,
+		"no-labels": 1,
+		"no-param-reassign": [2, { "props": false }],
+		"no-loop-func": 1
+	}
+}
