@@ -43,8 +43,8 @@ let av = yargs.usage('$0 <cmd> [args]')
 
 	.command('ls [plan...]', 'Get the plan list of brickyard_modules', hack.noop, (argv) => cmd_handler(argv, 'ls'))
 	.command('build <plan...>', 'Build one or more plans', hack.noop, (argv) => cmd_handler(argv, 'build'))
-	.command('run <dir>', 'Run a brickyard app', hack.noop, (argv) => cmd_handler(argv, 'run'))
 	.command('test <plan...>', 'Test one or more plans', hack.noop, (argv) => cmd_handler(argv, 'test'))
+	.command('run <dir>', 'Run a brickyard app', hack.noop, (argv) => cmd_handler(argv, 'run'))
 
 	.strict()
 	.argv

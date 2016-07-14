@@ -12,8 +12,8 @@ npm i -g brickyard-cli
 Commands:
   ls [plan...]     Get the plan list of brickyard_modules
   build <plan...>  Build one or more plans
-  run <dir>        Run a brickyard app
   test <plan...>   Test one or more plans
+  run <dir>        Run a brickyard app
 
 Options:
   --help               Show help                                       [boolean]
