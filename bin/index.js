@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-const hack = require('../lib/hack.js')
 const yargs = require('yargs')
-
+const hack = require('../lib/hack.js')
+const brickyard = require('../lib/brickyard')
 
 function cmd_handler(argv, cmd) {
 	if (argv._.length !== 1) {
@@ -52,6 +52,7 @@ let av = yargs.usage('$0 <cmd> [args]')
 // console.log(av)
 hack.require()
 module.require_alias('brickyard/argv', __filename)
+module.require_alias('brickyard', brickyard)
 hack.console(av)
 
 module.exports = av
