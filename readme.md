@@ -1,4 +1,5 @@
 # CLI for Brickyard
+Command Line Interface for Brickyard.
 
 ## Install
 ```bash

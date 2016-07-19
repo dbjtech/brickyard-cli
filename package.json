@@ -1,13 +1,13 @@
 {
   "name": "brickyard-cli",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "",
   "main": "",
   "bin": {
     "brickyard": "bin/index.js"
   },
-  "private": true,
-  "author": "",
+  "repository": "dbjtech/brickyard-cli",
+  "author": "vincentngthu",
   "license": "ISC",
   "preferGlobal": "true",
   "dependencies": {
