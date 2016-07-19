@@ -2,6 +2,7 @@
 const yargs = require('yargs')
 const hack = require('../lib/hack.js')
 const brickyard = require('../lib/brickyard')
+const logger = require('../lib/logger')
 
 function cmd_handler(argv, cmd) {
 	if (argv._.length !== 1) {
@@ -50,9 +51,9 @@ let av = yargs.usage('$0 <cmd> [args]')
 	.argv
 
 // console.log(av)
+logger.setLevel(av.verbose)
+logger.hackConsole()
 hack.require()
-module.require_alias('brickyard/argv', __filename)
+module.require_alias('brickyard/private/argv', av)
+module.require_alias('brickyard/private/logger', logger)
 module.require_alias('brickyard', brickyard)
-hack.console(av)
-
-module.exports = av
