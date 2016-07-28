@@ -1,4 +1,4 @@
-# CLI for Brickyard
+# CLI for Brickyard [![Build Status](https://travis-ci.org/dbjtech/brickyard-cli.svg?branch=master)](https://travis-ci.org/dbjtech/brickyard-cli)
 Command Line Interface for Brickyard.
 
 ## Install
