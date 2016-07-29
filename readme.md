@@ -23,7 +23,7 @@ Options:
   --brickyard_modules  Path of brickyard_modules folder
                                                 [default: "./brickyard_modules"]
   --config             Path of config.js                [default: "./config.js"]
-  --output, -o         Path of config.js                   [default: "./output"]
+  --output, -o         Path of output                   [default: "./output"]
   --dir                Path of the brickyard app for run         [default: "./"]
   -v, --verbose        Log level. 0: INFO, 1: DEBUG, 2: TRACE            [count]
 ```

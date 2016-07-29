@@ -33,7 +33,7 @@ let av = yargs.usage('$0 <cmd> [args]')
 		default: './config.js',
 	})
 	.option('output', {
-		desc: 'Path of config.js',
+		desc: 'Path of output',
 		alias: 'o',
 		default: './output',
 	})
