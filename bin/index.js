@@ -46,6 +46,7 @@ let av = yargs.usage('$0 <cmd> [args]')
 	.command('build <plan...>', 'Build one or more plans', hack.noop, (argv) => cmd_handler(argv, 'build'))
 	.command('test <plan...>', 'Test one or more plans', hack.noop, (argv) => cmd_handler(argv, 'test'))
 	.command('run <dir>', 'Run a brickyard app', hack.noop, (argv) => cmd_handler(argv, 'run'))
+	.command('create-module <type> <dir> [name]', 'Create a brickyard module with name to the dir', hack.noop, (argv) => cmd_handler(argv, 'init'))
 
 	.strict()
 	.argv
