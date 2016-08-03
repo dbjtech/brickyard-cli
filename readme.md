@@ -11,10 +11,12 @@ npm i -g brickyard-cli
 <cmd> [args]
 
 Commands:
-  ls [plan...]     Get the plan list of brickyard_modules
-  build <plan...>  Build one or more plans
-  test <plan...>   Test one or more plans
-  run <dir>        Run a brickyard app
+  ls [plan...]                       Get the plan list of brickyard_modules
+  build <plan...>                    Build one or more plans
+  test <plan...>                     Test one or more plans
+  run [dir]                          Run a brickyard app
+  create-module <type> <dir> [name]  Create a brickyard module with name to the
+                                     dir
 
 Options:
   --help               Show help                                       [boolean]
@@ -48,6 +50,16 @@ Run a built brickyard program.
 
 options
 - --dir: Path of the brickyard app for run. [default: "./"]
+
+### brickyard create-module type dir name.
+Create a brickyard module in the specified dir with a specified name and type.
+After call, a directories path will be created.
+And the package.json and index.js will be set for you.
+
+options
+- --type: Must be "frontend", "backend", "plan" or "buildtask".
+- --dir: Path of the module directory.
+- --name: Package name of the module. [default: basename(dir)]
 
 ### other options
 - --help: Show usage info
