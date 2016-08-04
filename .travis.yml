@@ -9,7 +9,7 @@ before_script:
 
 script:
   - brickyard create-module buildtask brickyard_modules/build-test
-  - echo "const gulp=require('gulp'); gulp.task('a-build-task', ()=>console.log('building')); gulp.register_sub_tasks('build',0,'a-build-task'); gulp.task('a-run-task', ()=>require('brickyard').events.emit('run')); gulp.register_sub_tasks('run',0,'a-run-task');" > brickyard_modules/build-test/index.js
+  - echo "const brickyard=require('brickyard'); const gulp=require('gulp'); brickyard.ensureVersion('3.2.1'); gulp.task('a-build-task', ()=>console.log('building')); gulp.register_sub_tasks('build',0,'a-build-task'); gulp.task('a-run-task', ()=>brickyard.events.emit('run')); gulp.register_sub_tasks('run',0,'a-run-task');" > brickyard_modules/build-test/index.js
   - brickyard create-module plan brickyard_modules/plan-test
   - echo "module.exports={modules:['backend-test','build-test']}" > brickyard_modules/plan-test/index.js
   - brickyard create-module backend brickyard_modules/backend-test
@@ -21,3 +21,4 @@ script:
   - brickyard run output
   - cd output
   - brickyard run
+  - cd ..
