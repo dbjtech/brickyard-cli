@@ -16,6 +16,8 @@
         "no-use-before-define": 1,
         "no-labels": 1,
         "no-param-reassign": [2, { "props": false }],
-        "no-loop-func": 1
+        "no-loop-func": 1,
+        "import/no-extraneous-dependencies": 1,
+        "import/no-unresolved": 1
     }
 }
