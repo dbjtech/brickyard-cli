@@ -8,12 +8,16 @@ before_script:
   - touch config.js
 
 script:
-  - brickyard create-module build brickyard_modules/build-test
+  - brickyard create-module buildtask brickyard_modules/build-test
   - echo "const gulp=require('gulp'); gulp.task('a-build-task', ()=>console.log('building')); gulp.register_sub_tasks('build',0,'a-build-task'); gulp.task('a-run-task', ()=>require('brickyard').events.emit('run')); gulp.register_sub_tasks('run',0,'a-run-task');" > brickyard_modules/build-test/index.js
   - brickyard create-module plan brickyard_modules/plan-test
-  - echo "module.exports={modules:['backend-test','build-test']}" > brickyard_modules/backend-test/index.js
-  - backend module backend-test created at brickyard_modules/backend-test
+  - echo "module.exports={modules:['backend-test','build-test']}" > brickyard_modules/plan-test/index.js
+  - brickyard create-module backend brickyard_modules/backend-test
   - echo "require('brickyard').events.on('run', ()=>console.log('running'))" > brickyard_modules/backend-test/index.js
   - brickyard ls
   - brickyard ls plan-test
   - touch config.js
+  - brickyard build plan-test
+  - brickyard run output
+  - cd output
+  - brickyard run
