@@ -30,6 +30,9 @@ Options:
   -v, --verbose        Log level. 0: INFO, 1: DEBUG, 2: TRACE            [count]
 ```
 
+### brickyard --version
+Show the version of current brickyard-cli.
+
 ### brickyard ls
 Display a list of modules for the brickyard_modules directory.
 

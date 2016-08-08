@@ -14,6 +14,7 @@ function cmd_handler(argv, cmd) {
 }
 
 let av = yargs.usage('$0 <cmd> [args]')
+	.version()
 	.help('help')
 	.demand(1, '<cmd> is needed')
 
