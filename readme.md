@@ -64,6 +64,15 @@ options
 - --dir: Path of the module directory.
 - --name: Package name of the module. [default: basename(dir)]
 
+### brickyard test plan
+Run unit test for a plan. You can specify multi plans to run the unit tests. Example
+```bash
+mocha test mocha common-service-push
+```
+
+options
+- --modules: Only test for the sepecified modules. Test all when empty. [default: test all modules]
+
 ### other options
 - --help: Show usage info
 - --color: Log with color
