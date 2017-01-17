@@ -11,6 +11,7 @@
   "license": "ISC",
   "preferGlobal": "true",
   "dependencies": {
+    "bluebird": "^3.4.7",
     "bower": "^1.8.0",
     "del": "^2.2.2",
     "find-node-modules": "^1.0.4",
