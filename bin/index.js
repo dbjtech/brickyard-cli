@@ -1,59 +1,79 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs')
-const hack = require('../lib/hack.js')
-const brickyard = require('../lib/brickyard')
-const logger = require('../lib/logger')
+const _ = require('lodash')
 
 function cmdHandler(cmd) {
 	return (argv) => {
 		if (argv._.length !== 1) {
 			throw new Error('Unique <cmd> is needed')
 		}
-		hack.gulp(argv, cmd)
+		// node index.js <cmd>
+		const params = ['node', './index.js']
+
+		// node index.js --cmd <cmd>
+		params.push('--cmd', cmd)
+
+		// node index.js --cmd <cmd> --gulpfile ./gulpfile.js
+		params.push('--gulpfile', argv.gulpfile ? argv.gulpfile : `${__dirname}/../lib/gulpfile.js`)
+
+		// node index.js --cmd <cmd> --gulpfile ./gulpfile.js --cwd ${process.cwd()}
+		params.push('--cwd', process.cwd())
+
+		if (argv.color) {
+			params.push('--color')
+		}
+
+		if (argv.verbose < 1) {
+			params.push('--silent')
+		}
+
+		const clone = _.clone(process.argv)
+		process.argv = params
+		require('gulp/bin/gulp.js') // eslint-disable-line global-require
+		process.argv = clone
 	}
 }
 
-const argv = yargs
+/* eslint-disable no-unused-expressions */
+module.exports = yargs
 	.usage('$0 <cmd> [args]')
 	.version()
 	.help('help')
 	.demand(1, '<cmd> is needed')
-	.options({
-		verbose: {
-			desc: 'Log level. 0: INFO, 1: DEBUG, 2: TRACE',
-			alias: 'v',
-			global: true,
-		},
-		color: {
-			desc: 'Log with color',
-			global: true,
-		},
-		debug: {
-			desc: 'Use debug mode to build a plan',
-			global: true,
-		},
-		brickyard_modules: {
-			desc: 'Path of brickyard_modules folder',
-			default: './brickyard_modules',
-			global: true,
-		},
-		config: {
-			desc: 'Path of config.js',
-			default: './config.js',
-			global: true,
-		},
-		output: {
-			desc: 'Path of output',
-			alias: 'o',
-			default: './output',
-			global: true,
-		},
-		dir: {
-			desc: 'Path of the brickyard app for run',
-			default: './',
-			global: true,
-		},
+	.option('verbose', {
+		desc: 'Log level. 0: INFO, 1: DEBUG, 2: TRACE',
+		alias: 'v',
+		global: true,
+	})
+	.option('color', {
+		desc: 'Log with color',
+		global: true,
+	})
+	.option('debug', {
+		desc: 'Use debug mode to build a plan',
+		global: true,
+	})
+	.option('brickyard_modules', {
+		desc: 'Path of brickyard_modules folder',
+		default: './brickyard_modules',
+		global: true,
+	})
+	.option('config', {
+		desc: 'Path of config.js',
+		default: './config.js',
+		global: true,
+	})
+	.option('output', {
+		desc: 'Path of output',
+		alias: 'o',
+		default: './output',
+		global: true,
+	})
+	.option('dir', {
+		desc: 'Path of the brickyard app for run',
+		default: './',
+		global: true,
 	})
 	.command({
 		command: 'ls [plan...]',
@@ -82,10 +102,3 @@ const argv = yargs
 	})
 	.strict()
 	.argv
-
-logger.setLevel(argv.verbose)
-logger.hackConsole()
-hack.require()
-module.require_alias('brickyard/private/argv', argv)
-module.require_alias('brickyard/private/logger', logger)
-module.require_alias('brickyard', brickyard)
