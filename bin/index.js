@@ -45,6 +45,7 @@ module.exports = yargs
 		desc: 'Log level. 0: INFO, 1: DEBUG, 2: TRACE',
 		alias: 'v',
 		global: true,
+		default: 0,
 	})
 	.option('color', {
 		desc: 'Log with color',
