@@ -20,11 +20,9 @@ function cmdHandler(cmd) {
 		// node index.js --cmd <cmd> --gulpfile ./gulpfile.js --cwd ${process.cwd()}
 		params.push('--cwd', process.cwd())
 
-		if (argv.color) {
-			params.push('--color')
-		}
+		params.push('--color')
 
-		if (argv.verbose < 1) {
+		if (argv.silent) {
 			params.push('--silent')
 		}
 
@@ -35,11 +33,23 @@ function cmdHandler(cmd) {
 	}
 }
 
+function brickyardBuilder(args) {
+	return args
+		.option('dir', {
+			desc: 'Path of the brickyard app for run',
+			default: './output',
+		})
+		.option('config', {
+			desc: 'Path of config.js',
+			default: './config.js',
+		})
+}
+
 /* eslint-disable no-unused-expressions */
 module.exports = yargs
 	.usage('$0 <cmd> [args]')
 	.version()
-	.help('help')
+	.help()
 	.demand(1, '<cmd> is needed')
 	.option('verbose', {
 		desc: 'Log level. 0: INFO, 1: DEBUG, 2: TRACE',
@@ -47,33 +57,15 @@ module.exports = yargs
 		global: true,
 		default: 0,
 	})
-	.option('color', {
-		desc: 'Log with color',
+	.option('silent', {
+		desc: 'will disable all gulp logging',
+		alias: 's',
 		global: true,
-	})
-	.option('debug', {
-		desc: 'Use debug mode to build a plan',
-		global: true,
+		default: false,
 	})
 	.option('brickyard_modules', {
 		desc: 'Path of brickyard_modules folder',
 		default: './brickyard_modules',
-		global: true,
-	})
-	.option('config', {
-		desc: 'Path of config.js',
-		default: './config.js',
-		global: true,
-	})
-	.option('output', {
-		desc: 'Path of output',
-		alias: 'o',
-		default: './output',
-		global: true,
-	})
-	.option('dir', {
-		desc: 'Path of the brickyard app for run',
-		default: './',
 		global: true,
 	})
 	.command({
@@ -84,22 +76,28 @@ module.exports = yargs
 	.command({
 		command: 'build <plan...>',
 		desc: 'Build one or more plans',
+		builder: brickyardBuilder,
 		handler: cmdHandler('build'),
-	})
-	.command({
-		command: 'test <plan...>',
-		desc: 'Test one or more plans',
-		handler: cmdHandler('test'),
 	})
 	.command({
 		command: 'run [dir]',
 		desc: 'Run a brickyard app',
+		builder: brickyardBuilder,
 		handler: cmdHandler('run'),
 	})
 	.command({
-		command: 'create-module <type> <dir> [name]',
-		desc: 'Create a brickyard module with name to the dir',
-		handler: cmdHandler('init'),
+		command: 'debug <plan...>',
+		desc: 'Run a brickyard app with debug mode',
+		builder: args => brickyardBuilder(args)
+			.default('verbose', 1)
+			.default('debug', true),
+		handler: cmdHandler('debug'),
+	})
+	.command({
+		command: 'test <plan...>',
+		desc: 'Test one or more plans',
+		builder: brickyardBuilder,
+		handler: cmdHandler('test'),
 	})
 	.strict()
 	.argv
