@@ -33,16 +33,20 @@ function cmdHandler(cmd) {
 	}
 }
 
-function brickyardBuilder(args) {
-	return args
-		.option('dir', {
-			desc: 'Path of the brickyard app for run',
-			default: './output',
-		})
-		.option('config', {
-			desc: 'Path of config.js',
-			default: './config.js',
-		})
+const OPTION_MAP = {
+	dir: {
+		desc: 'Path of the brickyard app for run',
+		default: './output',
+	},
+	config: {
+		desc: 'Path of config.js',
+		default: './config.js',
+	},
+	instances: {
+		desc: 'Start x instances of app in cluster mode',
+		alias: 'i',
+		default: 1,
+	},
 }
 
 /* eslint-disable no-unused-expressions */
@@ -76,28 +80,22 @@ module.exports = yargs
 	.command({
 		command: 'build <plan...>',
 		desc: 'Build one or more plans',
-		builder: brickyardBuilder,
+		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config')),
 		handler: cmdHandler('build'),
 	})
 	.command({
 		command: 'run [dir]',
 		desc: 'Run a brickyard app',
-		builder: brickyardBuilder,
+		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'instances')),
 		handler: cmdHandler('run'),
 	})
 	.command({
 		command: 'debug <plan...>',
 		desc: 'Run a brickyard app with debug mode',
-		builder: args => brickyardBuilder(args)
+		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'instances'))
 			.default('verbose', 1)
 			.default('debug', true),
 		handler: cmdHandler('debug'),
-	})
-	.command({
-		command: 'test <plan...>',
-		desc: 'Test one or more plans',
-		builder: brickyardBuilder,
-		handler: cmdHandler('test'),
 	})
 	.strict()
 	.argv
