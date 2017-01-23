@@ -49,7 +49,6 @@ const OPTION_MAP = {
 	},
 }
 
-/* eslint-disable no-unused-expressions */
 module.exports = yargs
 	.usage('$0 <cmd> [args]')
 	.version()
