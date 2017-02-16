@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+require('../lib/harmony.js')
 const yargs = require('yargs')
 const _ = require('lodash')
 
