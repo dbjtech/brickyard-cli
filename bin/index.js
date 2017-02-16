@@ -22,7 +22,7 @@ function cmdHandler(cmd) {
 
 		params.push('--color')
 
-		if (argv.silent) {
+		if (!argv.verbose) {
 			params.push('--silent')
 		}
 
@@ -59,12 +59,7 @@ module.exports = yargs
 		alias: 'v',
 		global: true,
 		default: 0,
-	})
-	.option('silent', {
-		desc: 'will disable all gulp logging',
-		alias: 's',
-		global: true,
-		default: false,
+		count: true,
 	})
 	.option('brickyard_modules', {
 		desc: 'Path of brickyard_modules folder',
