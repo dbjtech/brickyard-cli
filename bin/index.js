@@ -45,6 +45,7 @@ const OPTION_MAP = {
 	instances: {
 		desc: 'Start x instances of app in cluster mode',
 		alias: 'i',
+		type: 'number',
 		default: 1,
 	},
 }
@@ -59,7 +60,7 @@ module.exports = yargs
 		alias: 'v',
 		global: true,
 		default: 0,
-		count: true,
+		type: 'count',
 	})
 	.option('brickyard_modules', {
 		desc: 'Path of brickyard_modules folder',
