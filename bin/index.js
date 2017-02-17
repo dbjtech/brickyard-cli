@@ -85,12 +85,9 @@ module.exports = yargs
 		handler: cmdHandler('run'),
 	})
 	.command({
-		command: 'debug <plan...>',
-		desc: 'Run a brickyard app with debug mode',
-		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'instances'))
-			.default('verbose', 1)
-			.default('debug', true),
-		handler: cmdHandler('debug'),
+		command: 'create-module <type> <dir> [name]',
+		desc: 'Create a brickyard module with name to the dir',
+		handler: cmdHandler('create-module'),
 	})
 	.strict()
 	.argv
