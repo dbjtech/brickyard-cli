@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - "6"
+  - "7"
 
 before_script:
   - npm i . -g
@@ -20,5 +20,5 @@ script:
   - brickyard build plan-test
   - brickyard run output
   - cd output
-  - brickyard run
+  - brickyard run .
   - cd ..
