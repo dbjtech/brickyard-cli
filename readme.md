@@ -26,7 +26,7 @@ Options:
                                                 [default: "./brickyard_modules"]
   --config             Path of config.js                [default: "./config.js"]
   --output, -o         Path of output                   [default: "./output"]
-  --dir                Path of the brickyard app for run         [default: "./"]
+  --dir                Path of the brickyard app for run or build        [default: "./output"]
   -v, --verbose        Log level. 0: INFO, 1: DEBUG, 2: TRACE            [count]
 ```
 
@@ -45,14 +45,16 @@ Display a list of modules for the specified plan.
 Build a plan.
 
 options
+- --run: Run the program after build.
+- --watch: Rebuild when files change.
 - --debug: Use debug mode to build a plan.
-- --output, -o: Path of config.js. [default: "./output"]
+- --output, -o: Path of build dir. [default: "./output"]
 
 ### brickyard run dir
 Run a built brickyard program.
 
 options
-- --dir: Path of the brickyard app for run. [default: "./"]
+- --dir: Path of the brickyard app for run. [default: "./output"]
 
 ### brickyard create-module type dir name.
 Create a brickyard module in the specified dir with a specified name and type.
