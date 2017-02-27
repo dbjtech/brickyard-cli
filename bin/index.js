@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+require('../lib/harmony.js')
 const yargs = require('yargs')
 const _ = require('lodash')
 
@@ -22,7 +22,7 @@ function cmdHandler(cmd) {
 
 		params.push('--color')
 
-		if (argv.silent) {
+		if (!argv.verbose) {
 			params.push('--silent')
 		}
 
@@ -45,6 +45,7 @@ const OPTION_MAP = {
 	instances: {
 		desc: 'Start x instances of app in cluster mode',
 		alias: 'i',
+		type: 'number',
 		default: 1,
 	},
 }
@@ -59,12 +60,7 @@ module.exports = yargs
 		alias: 'v',
 		global: true,
 		default: 0,
-	})
-	.option('silent', {
-		desc: 'will disable all gulp logging',
-		alias: 's',
-		global: true,
-		default: false,
+		type: 'count',
 	})
 	.option('brickyard_modules', {
 		desc: 'Path of brickyard_modules folder',
@@ -89,12 +85,9 @@ module.exports = yargs
 		handler: cmdHandler('run'),
 	})
 	.command({
-		command: 'debug <plan...>',
-		desc: 'Run a brickyard app with debug mode',
-		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'instances'))
-			.default('verbose', 1)
-			.default('debug', true),
-		handler: cmdHandler('debug'),
+		command: 'create-module <type> <dir> [name]',
+		desc: 'Create a brickyard module with name to the dir',
+		handler: cmdHandler('create-module'),
 	})
 	.strict()
 	.argv
