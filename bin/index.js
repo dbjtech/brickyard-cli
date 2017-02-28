@@ -85,6 +85,12 @@ module.exports = yargs
 		handler: cmdHandler('run'),
 	})
 	.command({
+		command: 'test <plan...> [modules...]',
+		desc: 'Test modules of plans',
+		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config')),
+		handler: cmdHandler('build'),
+	})
+	.command({
 		command: 'create-module <type> <dir> [name]',
 		desc: 'Create a brickyard module with name to the dir',
 		handler: cmdHandler('create-module'),
