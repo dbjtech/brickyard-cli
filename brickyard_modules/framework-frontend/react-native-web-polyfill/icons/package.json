@@ -1,0 +1,9 @@
+{
+  "name": "react-native-web-polyfill-icons",
+  "brickyard-module-type": "frontend",
+  "version": "0.0.1",
+  "description": "frontend for react-native-web-polyfill-icons",
+  "main": "index.js",
+  "author": "brickyard-developer",
+  "license": "ISC"
+}

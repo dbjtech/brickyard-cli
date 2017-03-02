@@ -1,0 +1,48 @@
+@font-face {
+	font-family: 'Entypo';
+	src: url('./Entypo.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'EvilIcons';
+	src: url('./EvilIcons.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'FontAwesome';
+	src: url('./FontAwesome.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Foundation';
+	src: url('./Foundation.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Ionicons';
+	src: url('./Ionicons.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'MaterialIcons';
+	src: url('./MaterialIcons.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Octicons';
+	src: url('./Octicons.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Zocial';
+	src: url('./Zocial.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}

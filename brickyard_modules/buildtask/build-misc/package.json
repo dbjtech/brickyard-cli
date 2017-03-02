@@ -1,0 +1,19 @@
+{
+  "name": "buildtask-build-misc",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "前端入口，html模板等编译流程",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gulp-data": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-template": "^3.0.0",
+    "lodash": "^4.6.1"
+  }
+}

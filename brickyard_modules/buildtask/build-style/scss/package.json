@@ -1,0 +1,16 @@
+{
+  "name": "buildtask-build-style-scss",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "scss文件编译",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp-sass": "^2.2.0",
+    "node-sass": "^3.4.2"
+  }
+}

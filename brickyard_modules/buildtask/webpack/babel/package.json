@@ -1,0 +1,20 @@
+{
+  "name": "buildtask-webpack-babel",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "webpack程序的babel编译流程",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-polyfill": "^6.22.0",
+    "babel-preset-latest": "^6.22.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "lodash": "^4.17.4"
+  }
+}
