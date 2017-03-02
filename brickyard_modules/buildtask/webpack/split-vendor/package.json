@@ -1,0 +1,12 @@
+{
+  "name": "buildtask-webpack-split-vendor",
+  "brickyard-module-type": "buildtask",
+  "version": "0.0.1",
+  "description": "split vendor js from frontend main.js",
+  "main": "index.js",
+  "author": "brickyard-developer",
+  "license": "ISC",
+  "dependencies": {
+    "webpack": "^1.13.1"
+  }
+}

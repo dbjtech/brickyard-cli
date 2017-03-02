@@ -1,0 +1,16 @@
+{
+  "name": "buildtask-webpack-ng-annotate",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "webpack程序的angular annotate修正",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "lodash": "^4.6.1",
+    "ng-annotate-loader": "^0.1.0"
+  }
+}

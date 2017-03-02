@@ -1,0 +1,19 @@
+{
+  "name": "buildtask-webpack-css",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "webpack程序的css加载",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^0.23.1",
+    "do-nothing-loader": "^1.0.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "lodash": "^4.6.1",
+    "style-loader": "^0.13.0"
+  }
+}

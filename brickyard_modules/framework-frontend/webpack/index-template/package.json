@@ -1,0 +1,12 @@
+{
+  "name": "webpack-index-template",
+  "brickyard-module-type": "frontend",
+  "version": "0.0.1",
+  "description": "frontend for webpack-index-template",
+  "main": "index.js",
+  "author": "brickyard-developer",
+  "license": "ISC",
+  "devDependencies": {
+    "html-webpack-plugin": "^2.24.1"
+  }
+}

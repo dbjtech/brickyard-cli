@@ -1,0 +1,17 @@
+{
+  "name": "buildtask-webpack-resource",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "webpack程序的静态资源加载",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "file-loader": "^0.8.5",
+    "lodash": "^4.6.1",
+    "url-loader": "^0.5.7"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "buildtask-build-style-minify",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "压缩css",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-clean-css": "~2.0.3"
+  }
+}
