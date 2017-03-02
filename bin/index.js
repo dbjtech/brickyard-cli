@@ -3,21 +3,18 @@ require('../lib/harmony.js')
 const yargs = require('yargs')
 const _ = require('lodash')
 
-function cmdHandler(cmd) {
+function cmdHandler() {
 	return (argv) => {
 		if (argv._.length !== 1) {
 			throw new Error('Unique <cmd> is needed')
 		}
-		// node index.js <cmd>
+		// node index.js
 		const params = ['node', './index.js']
 
-		// node index.js --cmd <cmd>
-		params.push('--cmd', cmd)
-
-		// node index.js --cmd <cmd> --gulpfile ./gulpfile.js
+		// node index.js --gulpfile ./gulpfile.js
 		params.push('--gulpfile', argv.gulpfile ? argv.gulpfile : `${__dirname}/../lib/gulpfile.js`)
 
-		// node index.js --cmd <cmd> --gulpfile ./gulpfile.js --cwd ${process.cwd()}
+		// node index.js --gulpfile ./gulpfile.js --cwd ${process.cwd()}
 		params.push('--cwd', process.cwd())
 
 		params.push('--color')
@@ -34,6 +31,22 @@ function cmdHandler(cmd) {
 }
 
 const OPTION_MAP = {
+	run: {
+		desc: 'Run the app after build',
+		type: 'boolean',
+	},
+	watch: {
+		desc: 'Watch source code and rebuild when it changed',
+		type: 'boolean',
+	},
+	debug: {
+		desc: 'Use development mode to build',
+		type: 'boolean',
+	},
+	modules: {
+		desc: 'Modules for test',
+		type: 'array',
+	},
 	dir: {
 		desc: 'Path of the brickyard app for run',
 		default: './output',
@@ -68,32 +81,32 @@ module.exports = yargs
 		global: true,
 	})
 	.command({
-		command: 'ls [plan...]',
+		command: 'ls [plan..]',
 		desc: 'Get the plan list of brickyard_modules',
-		handler: cmdHandler('ls'),
+		handler: cmdHandler(),
 	})
 	.command({
-		command: 'build <plan...>',
+		command: 'build <plan..>',
 		desc: 'Build one or more plans',
-		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config')),
-		handler: cmdHandler('build'),
+		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'run', 'debug', 'watch')),
+		handler: cmdHandler(),
 	})
 	.command({
 		command: 'run [dir]',
 		desc: 'Run a brickyard app',
 		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'instances')),
-		handler: cmdHandler('run'),
+		handler: cmdHandler(),
 	})
 	.command({
-		command: 'test <plan...> [modules...]',
+		command: 'test <plan..>',
 		desc: 'Test modules of plans',
-		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config')),
-		handler: cmdHandler('build'),
+		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'modules', 'debug', 'watch')),
+		handler: cmdHandler(),
 	})
 	.command({
 		command: 'create-module <type> <dir> [name]',
 		desc: 'Create a brickyard module with name to the dir',
-		handler: cmdHandler('create-module'),
+		handler: cmdHandler(),
 	})
 	.strict()
 	.argv
