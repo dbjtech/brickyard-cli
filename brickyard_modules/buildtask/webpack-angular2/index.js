@@ -9,7 +9,7 @@ brickyard.events.on('build-webpack-config', (config) => {
 		loaders: [`awesome-typescript?configFileName=${__dirname}/tsconfig.json`, 'angular2-template'],
 	}, {
 		test: /\.html$/,
-		loader: 'html',
+		loader: 'html?minimize=false',
 	}, {
 		test: /\.component\.css$/,
 		loader: 'raw',

@@ -16,7 +16,6 @@ script:
   - echo "require('brickyard').events.on('run', ()=>console.log('running'))" > brickyard_modules/backend-test/index.js
   - brickyard ls
   - brickyard ls plan-test
-  - touch config.js
   - brickyard build plan-test
   - brickyard run output
   - cd output
