@@ -67,7 +67,7 @@ gulp.create_tasks({
 	 * @param cb
 	 */
 	clean_temp: function (cb) {
-		if (!brickyard.config.debug) {
+		if (!brickyard.argv.debug && !brickyard.argv.watch) {
 			gulp.del.sync([brickyard.dirs.temp, brickyard.dirs.bower])
 		}
 
