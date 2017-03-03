@@ -6,7 +6,6 @@ node_js:
 
 before_script:
   - npm i . -g
-  - touch config.js
 
 script:
   - brickyard create-module buildtask brickyard_modules/build-test
