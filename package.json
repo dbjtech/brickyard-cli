@@ -1,6 +1,6 @@
 {
   "name": "brickyard-cli",
-  "version": "4.0.2",
+  "version": "4.1.2",
   "description": "",
   "main": "",
   "bin": {
@@ -9,7 +9,7 @@
   "repository": "dbjtech/brickyard-cli",
   "author": "vincentngthu",
   "license": "ISC",
-  "preferGlobal": "true",
+  "preferGlobal": true,
   "dependencies": {
     "bluebird": "^3.4.7",
     "del": "^2.2.2",

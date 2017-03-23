@@ -201,6 +201,10 @@ function fix_shim(shim) {
 	// highcharts @ admin-statistic
 	if (is_declared('highcharts')) {
 		try_set(shim, 'highcharts', 'exports', 'Highcharts')
+		try_set(shim, 'highcharts-more', { 
+			path: `${brickyard.dirs.bower}/highcharts/highcharts-more.js`,
+			exports: 'null',
+		})
 	}
 
 	// messenger @ admin-sprite-battle
