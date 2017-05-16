@@ -1,7 +1,0 @@
-FROM dbjtech/brickyard-cli
-
-RUN echo -e "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-
-RUN apk --update --no-cache add docker
-
-CMD ["brickyard"]
