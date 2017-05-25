@@ -23,10 +23,7 @@ function cmdHandler() {
 			params.push('--silent')
 		}
 
-		const clone = _.clone(process.argv)
-		process.argv = params
-		require('gulp/bin/gulp.js') // eslint-disable-line global-require
-		process.argv = clone
+		process.nextTick(() => require('../lib/gulpfile.js')) // eslint-disable-line global-require
 	}
 }
 

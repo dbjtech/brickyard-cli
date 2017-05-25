@@ -1,5 +1,3 @@
-'use strict'
-
 const _ = require('lodash')
 const gulp = require('gulp')
 const brickyard = require('brickyard')
@@ -11,29 +9,31 @@ gulp.create_tasks({
 	/**
 	 * 将前端插件内对应的资源复制到临时目录
 	 */
-	build_frontend_plugins_temp: function () {
-		let streams = []
-		_.each(brickyard.modules.frontend, function (plugin, id) {
-			let _path = []
-			_path.push(`${plugin.path}/**/*.{js,es6,es7,json,md,html,css,scss,map,gif,jpg,jpeg,png,ico,svg,ttf,eot,woff,woff2,xsd,wsdl,mp3,wav}`)
-			_path.push(`!${plugin.path}/**/node_modules/**`)
-			_path.push(`!${plugin.path}/**/bower_components/**`)
-			_path.push(`!${plugin.path}/**/server/**`)
+	build_frontend_plugins_temp: () => {
+		const mergeStream = require('merge-stream')
+		const streams = []
+		_.each(brickyard.modules.frontend, (plugin, id) => {
+			const paths = []
+			paths.push(`${plugin.path}/**/*.{js,es6,es7,json,md,html,css,scss,map,gif,jpg,jpeg,png,ico,svg,ttf,eot,woff,woff2,xsd,wsdl,mp3,wav}`)
+			paths.push(`!${plugin.path}/**/node_modules/**`)
+			paths.push(`!${plugin.path}/**/bower_components/**`)
+			paths.push(`!${plugin.path}/**/server/**`)
 
-			let stream = gulp.src(_path)
+			const stream = gulp.src(paths)
 				.pipe(gulp.dest(`${brickyard.dirs.tempModules}/${id}`))
 			streams.push(stream)
 		})
 
 		if (streams.length) {
-			return gulp.merge(streams)
+			return mergeStream(streams)
 		}
+		return null
 	},
 	/**
 	 * 将 bower component 的相关资源文件复制到临时目录下
 	 */
-	build_bower_temp: function () {
-		let rc = [
+	build_bower_temp: () => {
+		const rc = [
 			`${brickyard.dirs.dest}/bower_components/jquery/dist/jquery.min.js`, // for admin shop plugin
 			`${brickyard.dirs.dest}/bower_components/**/*.{gif,jpg,jpeg,png,ico,css,map,sass,scss}`,
 			`${brickyard.dirs.dest}/bower_components/**/fonts/**`,
@@ -50,39 +50,37 @@ gulp.create_tasks({
 	 * todo: update to angular-bootstrap 1.0.0
 	 * @returns {*}
 	 */
-	fix_angular_strap: function () {
-		return gulp.src(`${brickyard.dirs.bower}/angular-strap/dist/angular-strap.js`)
+	fix_angular_strap: () =>
+		gulp.src(`${brickyard.dirs.bower}/angular-strap/dist/angular-strap.js`)
 			.pipe(gulp.plugins.ngAnnotate({
 				add: true,
 				remove: true,
 				rename: [
 					{ from: '$tooltip', to: '$asTooltip' },
 					{ from: '$button', to: '$asButton' },
-					{ from: '$modal', to: '$asModal' }]
+					{ from: '$modal', to: '$asModal' }],
 			}))
-			.pipe(gulp.dest(`${brickyard.dirs.bower}/angular-strap/fix`))
-	},
+			.pipe(gulp.dest(`${brickyard.dirs.bower}/angular-strap/fix`)),
 	/**
 	 * 清空临时目录
 	 * @param cb
 	 */
-	clean_temp: function (cb) {
+	clean_temp: () => {
+		const del = require('del')
 		if (!brickyard.argv.debug && !brickyard.argv.watch) {
-			gulp.del.sync([brickyard.dirs.temp, brickyard.dirs.bower])
+			del.sync([brickyard.dirs.temp, brickyard.dirs.bower])
 		}
-
-		cb()
-	}
+	},
 })
 
 // composed tasks
 gulp.create_tasks({
-	'build-webpage': function (cb) {
+	'build-webpage': (cb) => {
 		gulp.run_sequence('build_bower_temp', 'fix_angular_strap', 'build_frontend_plugins_temp', cb)
-	}
+	},
 })
 
-//21.build-babel, 22.build-style-scss, 23.build-style-minify, 24.build-misc
-//25.webpack-config, 26.webpack-build
+// 21.build-babel, 22.build-style-scss, 23.build-style-minify, 24.build-misc
+// 25.webpack-config, 26.webpack-build
 gulp.register_sub_tasks('build', 20, 'build-webpage')
 gulp.register_sub_tasks('build', 40, 'clean_temp')
