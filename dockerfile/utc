@@ -1,5 +1,5 @@
 FROM node:alpine
 
-RUN npm i -g brickyard-cli && npm cache clean
+RUN npm i -g --production brickyard-cli && npm cache clean
 
 CMD ["brickyard"]

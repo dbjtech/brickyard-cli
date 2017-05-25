@@ -3,7 +3,7 @@ const fs = require('fs')
 const _ = require('lodash')
 const gulp = require('gulp')
 const glob = require('glob')
-const npm = require('npm')
+const npm = require('./npm.js')
 const fnm = require('find-node-modules')
 const jsonEditor = require('gulp-json-editor')
 const brickyard = require('brickyard')
@@ -97,37 +97,23 @@ let atomicTasks = {
 	 * @param cb
 	 * @returns {*}
 	 */
-	npm_install: function (cb) {
-		let config = get_config('package.json')
+	npm_install: () => {
+		const config = get_config('package.json')
 		_.extend(config.dependencies, config.devDependencies)
 
 		let dependencies = _.difference(_.keys(config.dependencies), cache.installed_npm_packages)
 
 		if (!dependencies.length) {
-			gulp.plugins = require('gulp-load-plugins')({ config: config })
-			return cb()
+			gulp.plugins = require('gulp-load-plugins')({ config })
+			return
 		}
 
 		dependencies = _.map(_.pick(config.dependencies, dependencies), get_joiner('@'))
 		console.log('npm install', dependencies)
 
-		npm.load(config, function () {
-			if (brickyard.argv.registry) {
-				npm.config.set('registry', brickyard.argv.registry)
-			}
-
-			npm.commands.install('.', dependencies, function (err, list) {
-				if (err) {
-					cb(err)
-					return
-				}
-
-				console.debug('npm installed', list)
-				// update plugins with the new config
-				gulp.plugins = require('gulp-load-plugins')({ config: config })
-				cb()
-			})
-		})
+		const registry = brickyard.argv.registry ? `--registry ${brickyard.argv.registry}` : ''
+		npm.install([registry, ...dependencies])
+		gulp.plugins = require('gulp-load-plugins')({ config })
 	},
 	/**
 	 * 安装 合成的bower.json 已声明但缺失的 node_modules
