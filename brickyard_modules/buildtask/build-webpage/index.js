@@ -63,9 +63,8 @@ gulp.create_tasks({
 			.pipe(gulp.dest(`${brickyard.dirs.bower}/angular-strap/fix`)),
 	/**
 	 * 清空临时目录
-	 * @param cb
 	 */
-	clean_temp: () => {
+	clean_frontend_temp: () => {
 		const del = require('del')
 		if (!brickyard.argv.debug && !brickyard.argv.watch) {
 			del.sync([brickyard.dirs.temp, brickyard.dirs.bower])
@@ -83,4 +82,4 @@ gulp.create_tasks({
 // 21.build-babel, 22.build-style-scss, 23.build-style-minify, 24.build-misc
 // 25.webpack-config, 26.webpack-build
 gulp.register_sub_tasks('build', 20, 'build-webpage')
-gulp.register_sub_tasks('build', 40, 'clean_temp')
+gulp.register_sub_tasks('build', 40, 'clean_frontend_temp')

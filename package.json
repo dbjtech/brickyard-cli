@@ -1,6 +1,6 @@
 {
   "name": "brickyard-cli",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "description": "",
   "main": "",
   "bin": {
@@ -19,6 +19,7 @@
     "gulp-json-editor": "^2.2.1",
     "harmonize": "^2.0.0",
     "lodash": "~4.17.4",
+    "merge-stream": "^1.0.1",
     "minimatch": "^3.0.3",
     "moment": "^2.17.1",
     "run-sequence": "^1.2.2",

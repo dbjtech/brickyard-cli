@@ -151,6 +151,13 @@ let atomicTasks = {
 			cb()
 		})
 	},
+
+	clean_buildtask_and_plan: () => {
+		const del = require('del')
+		if (!brickyard.argv.debug && !brickyard.argv.watch) {
+			del.sync([path.join(brickyard.dirs.modules, 'buildtask'), path.join(brickyard.dirs.modules, 'plan')])
+		}
+	},
 }
 
 let composedTasks = {
@@ -164,6 +171,7 @@ let composedTasks = {
 gulp.create_tasks(atomicTasks)
 gulp.create_tasks(composedTasks)
 gulp.register_sub_tasks('build', 0, 'install_dependencies')
+gulp.register_sub_tasks('build', 40, 'clean_buildtask_and_plan')
 
 /**
  * 获取 生成目录下 对应名称的文件（主要是*.json）
