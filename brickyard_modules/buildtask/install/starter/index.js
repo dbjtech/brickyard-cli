@@ -1,0 +1,8 @@
+const brickyard = require('brickyard-cli/lib/brickyard')
+const hack = require('brickyard-cli/lib/hack')
+
+hack.logWithLevel(0) // INFO
+
+brickyard.loadRuntime({ dir: __dirname })
+    .then(() => brickyard.sendSignals('run'))
+    .catch(e => console.error(e.stack))

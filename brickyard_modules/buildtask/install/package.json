@@ -15,5 +15,8 @@
     "gulp-json-editor": "^2.2.1",
     "gulp-load-plugins": "^1.2.4",
     "lodash": "^4.6.1"
+  },
+  "dependencies": {
+    "brickyard-cli": "^4.1.0"
   }
 }

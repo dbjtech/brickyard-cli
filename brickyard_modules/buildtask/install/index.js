@@ -45,7 +45,7 @@ let atomicTasks = {
 	/**
 	 * 检查已安装的npm modules
 	 */
-	npm_check_installed_npm_packages: function (cb) {
+	npm_check_installed_npm_packages: function () {
 		let config = get_config('package.json')
 		_.extend(config.dependencies, config.devDependencies)
 
@@ -64,13 +64,11 @@ let atomicTasks = {
 				}
 			}
 		}
-
-		cb()
 	},
 	/**
 	 * 检查已安装的 bower components
 	 */
-	npm_check_installed_bower_packages: function (cb) {
+	npm_check_installed_bower_packages: function () {
 		let config = get_config('bower.json')
 		cache.installed_bower_packages = []
 		for (let key of _.keys(config.dependencies)) {
@@ -89,8 +87,6 @@ let atomicTasks = {
 				}
 			}
 		}
-
-		cb()
 	},
 	/**
 	 * 安装 合成的package.json 已声明但缺失的 node_modules
@@ -152,6 +148,8 @@ let atomicTasks = {
 		})
 	},
 
+	copy_starter_to_dest: () => gulp.src(`${__dirname}/starter/index.js`).pipe(gulp.dest(brickyard.dirs.dest)),
+
 	clean_buildtask_and_plan: () => {
 		const del = require('del')
 		if (!brickyard.argv.debug && !brickyard.argv.watch) {
@@ -160,11 +158,11 @@ let atomicTasks = {
 	},
 }
 
-let composedTasks = {
-	install_dependencies: function(cb) {
+const composedTasks = {
+	install_dependencies: (cb) => {
 		gulp.run_sequence('export_npm_config', 'export_bower_config',
 			'npm_check_installed_npm_packages', 'npm_check_installed_bower_packages',
-			'npm_install', 'bower_install', 'npm_check_installed_bower_packages', cb)
+			'npm_install', 'bower_install', 'npm_check_installed_bower_packages', 'copy_starter_to_dest', cb)
 	},
 }
 
@@ -195,7 +193,7 @@ function get_config(fileName) {
  * @returns {Function}
  */
 function get_joiner(sep) {
-	return function(v, k) {
+	return (v, k) => {
 		if (/(https?|git):/.test(v)) {
 			return v
 		}
