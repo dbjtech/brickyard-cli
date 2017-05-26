@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "fs-extra": "^3.0.1",
     "gulp-data": "^1.2.0",
     "gulp-template": "^3.0.0",
     "lodash": "^4.6.1",
