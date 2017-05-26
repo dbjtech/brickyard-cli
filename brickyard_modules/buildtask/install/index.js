@@ -151,9 +151,11 @@ let atomicTasks = {
 	copy_starter_to_dest: () => gulp.src(`${__dirname}/starter/index.js`).pipe(gulp.dest(brickyard.dirs.dest)),
 
 	clean_buildtask_and_plan: () => {
-		const del = require('del')
+		const fse = require('fs-extra')
 		if (!brickyard.argv.debug && !brickyard.argv.watch) {
-			del.sync([path.join(brickyard.dirs.modules, 'buildtask'), path.join(brickyard.dirs.modules, 'plan')])
+			fse.removeSync(path.join(brickyard.dirs.modules, 'buildtask'))
+			fse.removeSync(path.join(brickyard.dirs.modules, 'plan'))
+			fse.removeSync(path.join(brickyard.dirs.dest, 'bower.json'))
 		}
 	},
 }
