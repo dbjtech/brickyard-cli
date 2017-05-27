@@ -21,7 +21,7 @@ gulp.create_tasks({
 				conservativeCollapse: true
 			}))
 			.pipe(gulp.plugins.angularTemplatecache({
-				root: 'plugins',
+				root: path.relative(brickyard.dirs.temp, brickyard.dirs.tempModules),
 				module: 'app.templates',
 				standalone: true,
 				moduleSystem: 'Browserify'
