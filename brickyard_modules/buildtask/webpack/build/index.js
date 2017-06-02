@@ -144,13 +144,22 @@ let tasks = {
 			})
 		}
 	},
+	clean_webpack_frontend_temp: () => {
+		const fse = require('fs-extra')
+		if (!brickyard.argv.debug && !brickyard.argv.watch) {
+			fse.removeSync(brickyard.dirs.temp)
+		}
+	},
 }
 
 gulp.create_tasks(tasks)
 gulp.create_tasks({
-	'webpack-build': function(cb) {
-		if (compiler) {return cb()}
-		gulp.run_sequence('build_entry', 'collect_plugin_configs', 'alias_config', 'webpack_config', 'webpack_build_with_config', cb)
+	'webpack-build': (cb) => {
+		if (compiler) {
+			cb()
+		} else {
+			gulp.run_sequence('build_entry', 'collect_plugin_configs', 'alias_config', 'webpack_config', 'webpack_build_with_config', 'clean_webpack_frontend_temp', cb)
+		}
 	},
 })
 

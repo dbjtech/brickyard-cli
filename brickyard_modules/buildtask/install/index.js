@@ -3,12 +3,13 @@ const fs = require('fs')
 const _ = require('lodash')
 const gulp = require('gulp')
 const glob = require('glob')
-const npm = require('npm')
+const npm = require('./npm.js')
 const fnm = require('find-node-modules')
 const jsonEditor = require('gulp-json-editor')
 const brickyard = require('brickyard')
+const semver = require('semver')
 
-brickyard.ensureVersion('4.0.0-alpha')
+brickyard.ensureVersion('4.2.0')
 
 let cache = {}
 let atomicTasks = {
@@ -45,7 +46,7 @@ let atomicTasks = {
 	/**
 	 * 检查已安装的npm modules
 	 */
-	npm_check_installed_npm_packages: function (cb) {
+	npm_check_installed_npm_packages: function () {
 		let config = get_config('package.json')
 		_.extend(config.dependencies, config.devDependencies)
 
@@ -64,13 +65,11 @@ let atomicTasks = {
 				}
 			}
 		}
-
-		cb()
 	},
 	/**
 	 * 检查已安装的 bower components
 	 */
-	npm_check_installed_bower_packages: function (cb) {
+	npm_check_installed_bower_packages: function () {
 		let config = get_config('bower.json')
 		cache.installed_bower_packages = []
 		for (let key of _.keys(config.dependencies)) {
@@ -89,45 +88,33 @@ let atomicTasks = {
 				}
 			}
 		}
-
-		cb()
 	},
 	/**
 	 * 安装 合成的package.json 已声明但缺失的 node_modules
 	 * @param cb
 	 * @returns {*}
 	 */
-	npm_install: function (cb) {
-		let config = get_config('package.json')
+	npm_install: () => {
+		const config = get_config('package.json')
 		_.extend(config.dependencies, config.devDependencies)
 
 		let dependencies = _.difference(_.keys(config.dependencies), cache.installed_npm_packages)
 
 		if (!dependencies.length) {
-			gulp.plugins = require('gulp-load-plugins')({ config: config })
-			return cb()
+			gulp.plugins = require('gulp-load-plugins')({ config })
+			return
 		}
 
 		dependencies = _.map(_.pick(config.dependencies, dependencies), get_joiner('@'))
 		console.log('npm install', dependencies)
+		if (semver.gt(npm.version(), '5.0.0')) {
+			// npm@^5.0.0 should install all deps
+			dependencies = _.map(config.dependencies, get_joiner('@'))
+		}
 
-		npm.load(config, function () {
-			if (brickyard.argv.registry) {
-				npm.config.set('registry', brickyard.argv.registry)
-			}
-
-			npm.commands.install('.', dependencies, function (err, list) {
-				if (err) {
-					cb(err)
-					return
-				}
-
-				console.debug('npm installed', list)
-				// update plugins with the new config
-				gulp.plugins = require('gulp-load-plugins')({ config: config })
-				cb()
-			})
-		})
+		const registry = brickyard.argv.registry ? `--registry ${brickyard.argv.registry}` : ''
+		npm.install([registry, '--no-save', ...dependencies])
+		gulp.plugins = require('gulp-load-plugins')({ config })
 	},
 	/**
 	 * 安装 合成的bower.json 已声明但缺失的 node_modules
@@ -165,19 +152,31 @@ let atomicTasks = {
 			cb()
 		})
 	},
+
+	copy_starter_to_dest: () => gulp.src(`${__dirname}/starter/index.js`).pipe(gulp.dest(brickyard.dirs.dest)),
+
+	clean_buildtask_and_plan: () => {
+		const fse = require('fs-extra')
+		if (!brickyard.argv.debug && !brickyard.argv.watch) {
+			fse.removeSync(path.join(brickyard.dirs.modules, 'buildtask'))
+			fse.removeSync(path.join(brickyard.dirs.modules, 'plan'))
+			fse.removeSync(path.join(brickyard.dirs.dest, 'bower.json'))
+		}
+	},
 }
 
-let composedTasks = {
-	install_dependencies: function(cb) {
+const composedTasks = {
+	install_dependencies: (cb) => {
 		gulp.run_sequence('export_npm_config', 'export_bower_config',
 			'npm_check_installed_npm_packages', 'npm_check_installed_bower_packages',
-			'npm_install', 'bower_install', 'npm_check_installed_bower_packages', cb)
+			'npm_install', 'bower_install', 'npm_check_installed_bower_packages', 'copy_starter_to_dest', cb)
 	},
 }
 
 gulp.create_tasks(atomicTasks)
 gulp.create_tasks(composedTasks)
 gulp.register_sub_tasks('build', 0, 'install_dependencies')
+gulp.register_sub_tasks('build', 40, 'clean_buildtask_and_plan')
 
 /**
  * 获取 生成目录下 对应名称的文件（主要是*.json）
@@ -201,7 +200,7 @@ function get_config(fileName) {
  * @returns {Function}
  */
 function get_joiner(sep) {
-	return function(v, k) {
+	return (v, k) => {
 		if (/(https?|git):/.test(v)) {
 			return v
 		}
