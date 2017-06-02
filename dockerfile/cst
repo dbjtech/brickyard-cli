@@ -1,6 +1,6 @@
 FROM node:alpine
 
-RUN npm i -g --production brickyard-cli && npm cache clean
+RUN npm i -g --production brickyard-cli && npm cache clean --force
 
 RUN apk add tzdata --update --no-cache && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" /etc/localtime && apk del tzdata
 
