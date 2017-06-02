@@ -7,8 +7,9 @@ const npm = require('./npm.js')
 const fnm = require('find-node-modules')
 const jsonEditor = require('gulp-json-editor')
 const brickyard = require('brickyard')
+const semver = require('semver')
 
-brickyard.ensureVersion('4.0.0-alpha')
+brickyard.ensureVersion('4.2.0')
 
 let cache = {}
 let atomicTasks = {
@@ -106,9 +107,13 @@ let atomicTasks = {
 
 		dependencies = _.map(_.pick(config.dependencies, dependencies), get_joiner('@'))
 		console.log('npm install', dependencies)
+		if (semver.gt(npm.version(), '5.0.0')) {
+			// npm@^5.0.0 should install all deps
+			dependencies = _.map(config.dependencies, get_joiner('@'))
+		}
 
 		const registry = brickyard.argv.registry ? `--registry ${brickyard.argv.registry}` : ''
-		npm.install([registry, ...dependencies])
+		npm.install([registry, '--no-save', ...dependencies])
 		gulp.plugins = require('gulp-load-plugins')({ config })
 	},
 	/**
