@@ -12,7 +12,7 @@ brickyard.events.on('build-webpack-config', (config) => {
 		test: /\.vue$/,
 		loader: 'vue',
 	})
-	config.vue.loaders.js = 'babel?presets[]=latest&presets[]=stage-2'
+	config.vue.loaders.js = 'babel?presets[]=env&presets[]=stage-2'
 	config.vue.loaders.scss = 'vue-style!css!sass'
 	config.vue.loaders.sass = 'vue-style!css!sass?indentedSyntax'
 })

@@ -113,7 +113,7 @@ let atomicTasks = {
 		}
 
 		const registry = brickyard.argv.registry ? `--registry ${brickyard.argv.registry}` : ''
-		npm.install([registry, '--no-save', ...dependencies])
+		npm.install([registry, '--no-save', '--no-prune', ...dependencies])
 		gulp.plugins = require('gulp-load-plugins')({ config })
 	},
 	/**

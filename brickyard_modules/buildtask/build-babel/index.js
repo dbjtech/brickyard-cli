@@ -19,7 +19,7 @@ const tasks = {
 
 			const stream = gulp.src(path)
 				.pipe(gulp.plugins.babel({
-					presets: ['latest', 'stage-2'],
+					presets: ['env', 'stage-2'],
 					plugins: [],
 				}))
 				.pipe(gulp.dest(`${brickyard.dirs.modules}/${plugin.type}/${id}`))
@@ -38,7 +38,7 @@ const tasks = {
 	babel_build_es6_7_frontend: () =>
 		gulp.src(`${brickyard.dirs.tempModules}/**/*.{es6,es7}`)
 			.pipe(gulp.plugins.babel({
-				presets: ['latest', 'stage-2'],
+				presets: ['env', 'stage-2'],
 				plugins: [],
 			}))
 			.pipe(gulp.dest(brickyard.dirs.tempModules)),
