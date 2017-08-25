@@ -2,6 +2,14 @@
 require('../lib/harmony.js')
 const yargs = require('yargs')
 const _ = require('lodash')
+const updateNotifier = require('update-notifier')
+const pkg = require('../package.json')
+
+// check if a new version of brickyard-cli is available and print an update notification
+updateNotifier({
+	pkg,
+	updateCheckInterval: 0,
+}).notify()
 
 function cmdHandler() {
 	return (argv) => {
