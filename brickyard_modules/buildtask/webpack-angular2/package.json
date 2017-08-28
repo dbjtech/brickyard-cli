@@ -11,13 +11,14 @@
   "license": "ISC",
   "devDependencies": {
     "@types/core-js": "^0.9.35",
-    "@types/node": "^7.0.5",
-    "typescript": "^2.2.1",
-    "typings": "^2.1.0",
+    "@types/node": "^7.0.7",
+    "angular-router-loader": "^0.6.0",
     "angular2-template-loader": "^0.6.2",
     "awesome-typescript-loader": "^3.0.8",
-    "css-loader": "^0.26.2",
-    "html-loader": "^0.4.5",
-    "raw-loader": "^0.5.1"
+    "css-loader": "^0.28.5",
+    "html-loader": "^0.5.1",
+    "raw-loader": "^0.5.1",
+    "typescript": "^2.2.1",
+    "typings": "^2.1.0"
   }
 }

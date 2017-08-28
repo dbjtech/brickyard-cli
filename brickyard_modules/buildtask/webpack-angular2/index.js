@@ -6,7 +6,7 @@ brickyard.events.on('build-webpack-config', (config) => {
 	config.resolve.extensions.push('.ts', '.tsx')
 	config.module.loaders.push({
 		test: /\.ts$/,
-		loaders: [`awesome-typescript?configFileName=${__dirname}/tsconfig.json`, 'angular2-template'],
+		loaders: [`awesome-typescript?configFileName=${__dirname}/tsconfig.json`, 'angular2-template', 'angular-router'],
 	}, {
 		test: /\.html$/,
 		loader: 'html?minimize=false',

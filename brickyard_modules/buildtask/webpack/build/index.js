@@ -49,8 +49,12 @@ let tasks = {
 	alias_config: function() {
 		// brickyard plugin
 		_.each(brickyard.modules.frontend, function(plugin, pid) {
-			alias[pid] = join_cwd_if_relative(brickyard.dirs.tempModules, plugin.name, plugin.main)
-			alias[`brickyard/${pid}`] = join_cwd_if_relative(brickyard.dirs.tempModules, plugin.name)
+			const modulePath = join_cwd_if_relative(brickyard.dirs.tempModules, plugin.name, plugin.main)
+			alias[pid] = modulePath
+			alias[`brickyard/${pid}`] = modulePath
+			alias[`brickyard\\${pid}`] = modulePath
+			alias[`@brickyard/${pid}`] = modulePath
+			alias[`@brickyard\\${pid}`] = modulePath
 		})
 		// bower
 		let bower_conf = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/bower.json`))
