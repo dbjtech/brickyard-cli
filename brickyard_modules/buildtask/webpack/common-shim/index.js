@@ -17,7 +17,7 @@ brickyard.events.on('build-webpack-config', function(config) {
 	if (dependencies.jquery) {
 		config.module.loaders.push({
 			test: require.resolve('jquery'),
-			loader: 'expose-loader?jQuery!expose?$',
+			loader: 'expose-loader?jQuery!expose-loader?$',
 		})
 	}
 	if (dependencies.bootstrap && dependencies.jquery) {
