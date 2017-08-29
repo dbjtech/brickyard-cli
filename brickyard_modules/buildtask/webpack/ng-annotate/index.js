@@ -12,6 +12,6 @@ brickyard.events.on('build-webpack-config', function(config) {
 	config.module.loaders.push({
 		test: /\.js$/i,
 		exclude: /(node_modules|bower_components)/,
-		loader: 'ng-annotate',
+		loader: 'ng-annotate-loader',
 	})
 })

@@ -17,13 +17,13 @@ brickyard.events.on('build-webpack-config', function(config) {
 	if (dependencies.jquery) {
 		config.module.loaders.push({
 			test: require.resolve('jquery'),
-			loader: 'expose?jQuery!expose?$',
+			loader: 'expose-loader?jQuery!expose?$',
 		})
 	}
 	if (dependencies.bootstrap && dependencies.jquery) {
 		config.module.loaders.push({
 			test: require.resolve('bootstrap'),
-			loader: 'imports?jQuery=jquery',
+			loader: 'imports-loader?jQuery=jquery',
 		})
 	}
 	if (dependencies.angular && dependencies.jquery) {
@@ -36,7 +36,7 @@ brickyard.events.on('build-webpack-config', function(config) {
 		// 2. 把全局的angular对象作为模块的返回，否则外部调用var angular=require('angular');会出问题
 		config.module.loaders.push({
 			test: require.resolve('angular'),
-			loader: 'imports?jQuery=jquery',
+			loader: 'imports-loader?jQuery=jquery',
 		})
 	}
 	if (dependencies.ztree_v3) {
@@ -45,13 +45,13 @@ brickyard.events.on('build-webpack-config', function(config) {
 	if (dependencies.wowjs) {
 		config.module.loaders.push({
 			test: require.resolve('wowjs'),
-			loader: 'expose?WOW!exports?this.WOW',
+			loader: 'expose-loader?WOW!exports-loader?this.WOW',
 		})
 	}
 	if (dependencies.respond) {
 		config.module.loaders.push({
 			test: path.join(base, 'respond', 'dest', 'respond.src.js'),
-			loader: 'imports?this=>window',
+			loader: 'imports-loader?this=>window',
 		})
 	}
 })

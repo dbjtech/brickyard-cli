@@ -72,9 +72,9 @@ let tasks = {
 		})
 		// console.debug('webpack config alias', alias)
 	},
-	webpack_config: function() {
+	webpack_config: () => {
 		const webpack = require('webpack')
-		_.each(configs, function(config) {
+		_.each(configs, (config) => {
 			_.defaultsDeep(config, {
 				// context: brickyard.dirs.tempModules,
 				// bail: true,
@@ -82,12 +82,13 @@ let tasks = {
 				output: {
 					path: www_dir,
 					filename: '[name].[chunkhash:6].js',
-					chunkFilename: '[name].[chunkhash:6].js',
 				},
 				resolve: {
-					modulesDirectories: ['web_modules', 'node_modules'],
-					alias: alias,
+					modules: ['web_modules', 'node_modules'],
+					extensions: ['.js', '.json'],
+					alias,
 				},
+				module: { loaders: [] },
 				node: {
 					__filename: true,
 					__dirname: true,
@@ -95,7 +96,6 @@ let tasks = {
 				},
 			})
 			brickyard.events.emit('build-webpack-config', config)
-			// config.plugins.push(new webpack.IgnorePlugin(/^templates$/))
 			if (!brickyard.argv.debug) {
 				config.plugins.push(new webpack.DefinePlugin({
 					'process.env': {

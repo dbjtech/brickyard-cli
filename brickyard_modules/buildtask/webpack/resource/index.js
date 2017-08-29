@@ -1,20 +1,18 @@
-'use strict'
-
 const path = require('path')
 const _ = require('lodash')
 const brickyard = require('brickyard')
 
-brickyard.events.on('build-webpack-config', function(config) {
+brickyard.events.on('build-webpack-config', (config) => {
 	_.defaultsDeep(config, { module: { loaders: [] } })
 	config.module.loaders.push({
 		test: tester(/\.(png|ico|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|wav)(\?.+)?$/i, brickyard.dirs.tempModules),
-		loader: `url?context=${brickyard.dirs.tempModules}&name=[path][name].[hash:6].[ext]&limit=10000`,
+		loader: `url-loader?context=${brickyard.dirs.tempModules}&name=[path][name].[hash:6].[ext]&limit=10000`,
 	// },{
 	// 	test: tester(/\.dtd$/, brickyard.dirs.tempModules),
 	// 	loader: 'file?context=' + brickyard.dirs.tempModules + '&name=[path][name].[hash].[ext]',
 	}, {
 		test: tester(/\.(png|ico|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?.+)?$/i, /node_modules/),
-		loader: 'url?name=[path][name].[hash:6].[ext]&limit=10000',
+		loader: 'url-loader?name=[path][name].[hash:6].[ext]&limit=10000',
 	// },{
 	//	test: tester(/\.dtd$/, /node_modules/),
 	//	loader: 'file?name=[path][name].[hash].[ext]',

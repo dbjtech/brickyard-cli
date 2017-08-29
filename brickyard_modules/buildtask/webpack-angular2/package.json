@@ -10,15 +10,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/core-js": "^0.9.35",
-    "@types/node": "^7.0.7",
+    "@angular/compiler-cli": "^4.3.6",
+    "@ngtools/webpack": "^1.6.2",
+    "@types/core-js": "^0.9.43",
+    "@types/node": "^8.0.25",
     "angular-router-loader": "^0.6.0",
     "angular2-template-loader": "^0.6.2",
-    "awesome-typescript-loader": "^3.0.8",
+    "awesome-typescript-loader": "^3.2.3",
     "css-loader": "^0.28.5",
     "html-loader": "^0.5.1",
     "raw-loader": "^0.5.1",
-    "typescript": "^2.2.1",
-    "typings": "^2.1.0"
+    "typescript": "^2.4.2",
+    "typings": "^2.1.1"
   }
 }

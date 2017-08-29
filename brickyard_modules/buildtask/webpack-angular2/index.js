@@ -2,16 +2,17 @@ const _ = require('lodash')
 const brickyard = require('brickyard')
 
 brickyard.events.on('build-webpack-config', (config) => {
-	_.defaultsDeep(config, { module: { loaders: [] }, plugins: [], resolve: { extensions: ['', '.js'] } })
+	_.defaultsDeep(config, { module: { loaders: [] }, plugins: [] })
 	config.resolve.extensions.push('.ts', '.tsx')
 	config.module.loaders.push({
 		test: /\.ts$/,
-		loaders: [`awesome-typescript?configFileName=${__dirname}/tsconfig.json`, 'angular2-template', 'angular-router'],
+		loaders: [`awesome-typescript-loader?configFileName=${__dirname}/tsconfig.json`, 'angular2-template-loader', 'angular-router-loader'],
+		// loaders: ['@ngtools/webpack/src/loader.js', 'angular-router'],
 	}, {
 		test: /\.html$/,
-		loader: 'html?minimize=false',
+		loader: 'html-loader?minimize=false',
 	}, {
 		test: /\.component\.css$/,
-		loader: 'raw',
+		loader: 'raw-loader',
 	})
 })

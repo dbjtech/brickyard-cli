@@ -5,8 +5,5 @@
   "description": "split vendor js from frontend main.js",
   "main": "index.js",
   "author": "brickyard-developer",
-  "license": "ISC",
-  "dependencies": {
-    "webpack": "^1.13.1"
-  }
+  "license": "ISC"
 }
