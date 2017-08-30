@@ -103,7 +103,9 @@ let tasks = {
 					},
 				}))
 				if (!brickyard.argv.noUglify) {
-					config.plugins.push(new webpack.optimize.UglifyJsPlugin())
+					config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+						comments: false,
+					}))
 				}
 			}
 		})
