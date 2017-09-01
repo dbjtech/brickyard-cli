@@ -26,15 +26,15 @@ brickyard.events.on('build-webpack-config', function(config) {
 	_.defaultsDeep(config, { module: { loaders: [] }, plugins: [] })
 	config.module.loaders.push({
 		test: tester(exts[0]),
-		loader: 'do-nothing',
+		loader: 'do-nothing-loader',
 	})
 	config.module.loaders.push({
 		test: tester(exts[1]),
-		loader: 'style/useable!css',
+		loader: 'style-loader/useable!css-loader',
 	})
 	config.module.loaders.push({
 		test: tester(exts[2]),
-		loader: etp.extract('css'),
+		loader: etp.extract('css-loader'),
 	})
 	config.plugins.push(etp)
 })

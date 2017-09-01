@@ -5,7 +5,7 @@ const BRICKYARD_CHILD_PROCESS_RUN_AGAIN = 'brickyard-child-process-run-again' //
 
 brickyard.ensureVersion('4.0.0-alpha')
 
-let watchConfig = brickyard.argv.polling ? {
+const watchConfig = brickyard.argv.polling ? {
 	usePolling: true,
 	interval: typeof (brickyard.argv.polling) === 'number' ? brickyard.argv.polling : 1500,
 } : {}
@@ -25,22 +25,25 @@ brickyard.events.once('watch-output', () => {
 
 // rebuild if plan/buildtask/backend codes update
 brickyard.events.once('watch-backend', () => {
-	let mds = _.filter(brickyard.modules, (md) => ['plan', 'buildtask', 'backend'].indexOf(md.type) !== -1)
-	let watchee = _.map(mds, (md) => `${md.path}/`)
+	const mds = _.filter(brickyard.modules, md => ['plan', 'buildtask', 'backend'].indexOf(md.type) !== -1)
+	const watchee = _.map(mds, md => `${md.path}/`)
 	console.log('watch plan, buildtask and backend modules', watchee)
-	require('chokidar').watch(watchee, watchConfig).on('change', path => {
+
+	const onChange = _.debounce((path) => {
 		console.log('File Changed:', path)
 		process.send(BRICKYARD_CHILD_PROCESS_RUN_AGAIN)
 		process.exit(0)
-	})
+	}, 500)
+	require('chokidar').watch(watchee, watchConfig).on('change', onChange)
 })
 
 // rebuild if frontend codes update
 brickyard.events.once('watch-frontend', () => {
-	let mds = _.filter(brickyard.modules, (md) => ['frontend'].indexOf(md.type) !== -1)
-	let watchee = _.map(mds, (md) => `${md.path}/`)
+	const mds = _.filter(brickyard.modules, md => ['frontend'].indexOf(md.type) !== -1)
+	const watchee = _.map(mds, md => `${md.path}/`)
 	console.log('watch frontend modules', watchee)
-	require('chokidar').watch(watchee, watchConfig).on('change', path => {
+
+	const onChange = _.debounce((path) => {
 		console.log('File Changed:', path)
 		if (brickyard.modules.buildtask['buildtask-webpack-build']) {
 			brickyard.buildModules({ keepDestFiles: true }).then(() => console.log('Rebuild finished'))
@@ -48,5 +51,6 @@ brickyard.events.once('watch-frontend', () => {
 			process.send(BRICKYARD_CHILD_PROCESS_RUN_AGAIN)
 			process.exit(0)
 		}
-	})
+	}, 500)
+	require('chokidar').watch(watchee, watchConfig).on('change', onChange)
 })

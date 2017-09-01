@@ -6,6 +6,6 @@ brickyard.events.on('build-webpack-config', (config) => {
 	config.resolve.extensions.push('.jsx')
 	config.module.loaders.push({
 		test: /\.jsx$/,
-		loaders: [`babel?presets[]=es2015&presets[]=react`],
+		loaders: ['babel-loader?presets[]=es2015&presets[]=react'],
 	})
 })

@@ -29,20 +29,23 @@ brickyard.events.on('build-webpack-config', (config) => {
 	_.defaultsDeep(config, { plugins: [] })
 	// no hash, ref to https://github.com/webpack/webpack-dev-server/issues/377
 	config.output.filename = '[name].js'
-	config.output.chunkname = '[name].js'
-	config.entry.push(`webpack-dev-server/client?${getConfig().serverUrl}`)
-	config.entry.push('webpack/hot/dev-server')
+	// config.output.chunkname = '[name].js'
+	config.entry.push(`webpack-hot-middleware/client?${getConfig().serverUrl}`)
+	// config.entry.push('webpack/hot/dev-server')
 	config.plugins.push(new webpack.HotModuleReplacementPlugin())
 })
 
 brickyard.events.on('build-webpack-dev-server', (compiler) => {
-	const WebpackDevServer = require('webpack-dev-server')
+	const express = require('express')
+	const webpackDevMiddleware = require("webpack-dev-middleware")
+	const webpackHotMiddleware = require("webpack-hot-middleware")
 	const proxy = require('http-proxy-middleware')
 	const morgan = require('morgan')
 
 	let config = getConfig()
 	console.trace('init webpack-dev-server@', config.serverUrl)
-	server = new WebpackDevServer(compiler, {
+	server = express()
+	server.use(webpackDevMiddleware(compiler, {
 		// Tell the webpack dev server from where to find the files to serve.
 		// contentBase: config.serverUrl,
 		colors: true,
@@ -59,7 +62,9 @@ brickyard.events.on('build-webpack-dev-server', (compiler) => {
 			timings: true,
 			chunks: false,
 		},
-	})
+	}))
+
+	server.use(webpackHotMiddleware(compiler))
 
 	server.use(morgan('dev'))
 
