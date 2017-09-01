@@ -8,10 +8,9 @@ module.exports = {
 		'buildtask/webpack/resource',
 		'buildtask/webpack/css',
 		'buildtask/webpack-vue',
-		'framework/webserver/webpack-dev-server',
 		'buildtask/watch',
-		'buildtask/run',
 
+		'framework/webserver/webpack-dev-server',
 		'framework-frontend/webpack/index-template',
 	],
 	config: {

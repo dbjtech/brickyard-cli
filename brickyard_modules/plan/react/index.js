@@ -9,6 +9,7 @@ module.exports = {
 		'buildtask/webpack-react',
 		'buildtask/watch',
 
+		'framework/webserver/webpack-dev-server',
 		'framework-frontend/webpack/index-template',
 	],
 	config: {

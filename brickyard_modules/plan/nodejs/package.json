@@ -2,7 +2,7 @@
   "name": "nodejs",
   "version": "1.0.0",
   "brickyard-module-type": "plan",
-  "description": "build tasks for nodejs app(install, run, watch)",
+  "description": "build tasks for nodejs app(install, watch)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

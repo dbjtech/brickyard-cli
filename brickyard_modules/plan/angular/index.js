@@ -5,10 +5,9 @@ module.exports = {
 		'buildtask/webpack/split-vendor',
 		'buildtask/webpack/resource',
 		'buildtask/webpack-angular2',
-		'framework/webserver/webpack-dev-server',
 		'buildtask/watch',
-		'buildtask/run',
 
+		'framework/webserver/webpack-dev-server',
 		'framework-frontend/angular2/common',
 		'framework-frontend/webpack/index-template',
 	],
