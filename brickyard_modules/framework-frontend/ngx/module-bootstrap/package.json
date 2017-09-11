@@ -1,0 +1,16 @@
+{
+  "name": "ngx-module-bootstrap",
+  "brickyard-module-type": "frontend",
+  "version": "0.0.1",
+  "description": "bootstrap angular ngmodule",
+  "main": "index.ts",
+  "author": "brickyard-developer",
+  "license": "ISC",
+  "devDependencies": {
+    "@angular/common": "^4.4.0-RC.0",
+    "@angular/core": "^4.4.0-RC.0",
+    "@angular/platform-browser": "^4.4.0-RC.0",
+    "@angular/platform-browser-dynamic": "^4.4.0-RC.0",
+    "@angularclass/hmr": "^2.1.3"
+  }
+}

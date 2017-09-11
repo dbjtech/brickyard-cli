@@ -30,8 +30,8 @@ brickyard.events.on('build-webpack-config', (config) => {
 	// no hash, ref to https://github.com/webpack/webpack-dev-server/issues/377
 	config.output.filename = '[name].js'
 	// config.output.chunkname = '[name].js'
-	config.entry.push(`webpack-hot-middleware/client?${getConfig().serverUrl}`)
-	// config.entry.push('webpack/hot/dev-server')
+	config.entry.push(`webpack-hot-middleware/client?${getConfig().serverUrl}&reload=true`)
+	config.entry.push('webpack/hot/dev-server')
 	config.plugins.push(new webpack.HotModuleReplacementPlugin())
 })
 
