@@ -1,0 +1,12 @@
+{
+  "name": "ngx-module-collector",
+  "brickyard-module-type": "frontend",
+  "version": "0.0.1",
+  "description": "collect angular NgModule declarations",
+  "main": "index.ts",
+  "author": "brickyard-developer",
+  "license": "ISC",
+  "devDependencies": {
+    "lodash": "^4.17.4"
+  }
+}

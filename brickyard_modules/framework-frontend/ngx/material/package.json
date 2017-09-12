@@ -1,0 +1,22 @@
+{
+  "name": "ngx-material",
+  "brickyard-module-type": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@angular/animations": "^4.4.0-RC.0",
+    "@angular/cdk": "^2.0.0-beta.10",
+    "@angular/core": "^4.4.0-RC.0",
+    "@angular/forms": "^4.4.0-RC.0",
+    "@angular/http": "^4.4.0-RC.0",
+    "@angular/material": "^2.0.0-beta.10",
+    "@angular/platform-browser": "^4.4.0-RC.0",
+    "hammerjs": "^2.0.8"
+  }
+}
