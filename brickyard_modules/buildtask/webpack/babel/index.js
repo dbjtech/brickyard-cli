@@ -10,7 +10,7 @@ brickyard.events.on('build-webpack-config', (config) => {
 		loaders: ['babel-loader?presets[]=env&presets[]=stage-2'],
 	}
 	if (brickyard.modules.buildtask['buildtask-webpack-ng-annotate']) {
-		loader.loaders.unshift('ng-annotate')
+		loader.loaders.unshift('ng-annotate-loader')
 	}
 	config.module.loaders.push(loader)
 	config.entry.unshift('babel-polyfill')
