@@ -8,6 +8,8 @@ function getConfig() {
 	let config = brickyard.config['webpack-dev-server'] || {}
 
 	_.defaults(config, {
+		hot: true,
+		redirectToRoot: true,
 		host: '0.0.0.0',
 		port: 8080,
 	})
@@ -25,11 +27,15 @@ brickyard.events.on('build-webpack-config', (config) => {
 	if (!brickyard.argv.debug) {
 		return
 	}
-	const webpack = require('webpack')
-	_.defaultsDeep(config, { plugins: [] })
 	// no hash, ref to https://github.com/webpack/webpack-dev-server/issues/377
 	config.output.filename = '[name].js'
 	// config.output.chunkname = '[name].js'
+	if (!config.hot) {
+		return
+	}
+
+	const webpack = require('webpack')
+	_.defaultsDeep(config, { plugins: [] })
 	config.entry.push(`webpack-hot-middleware/client?${getConfig().serverUrl}&reload=true`)
 	config.entry.push('webpack/hot/dev-server')
 	config.plugins.push(new webpack.HotModuleReplacementPlugin())
@@ -64,7 +70,9 @@ brickyard.events.on('build-webpack-dev-server', (compiler) => {
 		},
 	}))
 
-	server.use(webpackHotMiddleware(compiler))
+	if (config.hot) {
+		server.use(webpackHotMiddleware(compiler))
+	}
 
 	server.use(morgan('dev'))
 
@@ -76,10 +84,13 @@ brickyard.events.on('build-webpack-dev-server', (compiler) => {
 			secure: false,
 		}))
 	}
-	server.use('/(\\w+/?)+', (req, res) => {
-		console.log('redirect', req.baseUrl, 'to /')
-		res.redirect('/')
-	})
+
+	if (config.redirectToRoot) {
+		server.use('/(\\w+/?)+', (req, res) => {
+			console.log('redirect', req.baseUrl, 'to /')
+			res.redirect('/')
+		})
+	}
 })
 
 brickyard.events.on('watch-frontend', () => {
