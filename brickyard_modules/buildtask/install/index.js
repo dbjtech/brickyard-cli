@@ -18,16 +18,14 @@ let atomicTasks = {
 	 * 其中涉及到将 收集到的插件依赖数据 与 根目录的 package.json 合并
 	 * @returns {*|{delay}}
 	 */
-	export_npm_config: function() {
-		let config_path = brickyard.getPackageJsonPath()
-		let config = brickyard.getPackageJson()
-		let config_gen = (json) => {
-			_.extend(json, config)
-			return json
-		}
+	export_npm_config: () => {
+		const configPath = brickyard.getPackageJsonPath()
+		const config = brickyard.getPackageJson()
+		config.main = 'index.js'
+		config.bin = { brickyard: 'index.js' }
 
-		return gulp.src(config_path)
-			.pipe(jsonEditor(config_gen || config))
+		return gulp.src(configPath)
+			.pipe(jsonEditor(config))
 			.pipe(gulp.dest(brickyard.dirs.dest))
 	},
 
