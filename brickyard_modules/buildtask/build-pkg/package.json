@@ -1,0 +1,17 @@
+{
+  "name": "buildtask-build-pkg",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "pack app into an executable",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "del": "^3.0.0",
+    "mkdirp": "^0.5.1",
+    "pkg": "^4.3.0-beta.0"
+  }
+}
