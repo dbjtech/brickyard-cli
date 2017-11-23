@@ -28,7 +28,7 @@ brickyard.events.on('build-webpack-config', (config) => {
 		return
 	}
 	// no hash, ref to https://github.com/webpack/webpack-dev-server/issues/377
-	config.output.filename = '[name].js'
+	config.output.filename = 'lib/[name].js'
 	// config.output.chunkname = '[name].js'
 	if (!config.hot) {
 		return

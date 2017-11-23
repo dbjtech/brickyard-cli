@@ -81,7 +81,7 @@ let tasks = {
 				entry: [`${brickyard.dirs.tempModules}/main.js`],
 				output: {
 					path: www_dir,
-					filename: '[name].[chunkhash:6].js',
+					filename: 'lib/[name].[chunkhash:6].js',
 				},
 				resolve: {
 					modules: ['web_modules', 'node_modules'],
