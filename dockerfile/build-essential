@@ -1,0 +1,11 @@
+FROM node:alpine
+
+RUN apk add tzdata --update --no-cache && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" /etc/localtime && apk del tzdata
+
+RUN apk add --no-cache python make g++ git
+
+RUN npm i -g --production --unsafe node-sass fibers && npm cache clean --force
+
+RUN npm i -g --production brickyard-cli && npm cache clean --force
+
+CMD ["brickyard"]
