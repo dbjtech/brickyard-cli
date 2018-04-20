@@ -5,8 +5,6 @@ const gulp = require('gulp')
 const glob = require('glob')
 const brickyard = require('brickyard')
 
-const www_dir = `${brickyard.dirs.dest}/www`
-
 // atomic tasks
 gulp.create_tasks({
 	/**
@@ -33,19 +31,16 @@ gulp.create_tasks({
 			}
 		}
 
+		const injection = {}
+		_.each(brickyard.modules.frontend, (plugin, key) => {
+			injection[key] = {
+				id: key,
+				css: plugin.css,
+			}
+		})
+
 		return gulp.src(path.join(__dirname, 'main.js'))
-			.pipe(gulp.plugins.data((/* file */) => {
-				// file.path = file.path.replace('.template','')
-				const injection = {}
-				_.each(brickyard.modules.frontend, (plugin, key) => {
-					injection[key] = {
-						id: key,
-						css: plugin.css,
-					}
-				})
-				return { plugins: injection }
-			}))
-			.pipe(gulp.plugins.template())
+			.pipe(gulp.plugins.template({ plugins: injection }))
 			.pipe(gulp.dest(brickyard.dirs.tempModules))
 	},
 	/**
@@ -63,7 +58,7 @@ gulp.create_tasks({
 		}
 
 		return gulp.src(src, { base: brickyard.dirs.temp })
-			.pipe(gulp.dest(www_dir))
+			.pipe(gulp.dest(brickyard.dirs.www))
 	},
 	/**
 	 * 通过对项目声明的 html 入口模版文件进行字符串标志替换
@@ -99,7 +94,7 @@ gulp.create_tasks({
 				.pipe(gulp.plugins.replace(/<!-- WEBSERVER -->/, brickyard.argv.webserver || ''))
 				.pipe(gulp.plugins.replace(/<!-- content -->/, task.content))
 				.pipe(gulp.plugins.rename(dest))
-				.pipe(gulp.dest(www_dir))
+				.pipe(gulp.dest(brickyard.dirs.www))
 			streams.push(p)
 		})
 		return mergeStream(streams)
