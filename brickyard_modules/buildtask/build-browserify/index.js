@@ -1,5 +1,3 @@
-'use strict'
-
 const path = require('path')
 const fs = require('fs')
 const gulp = require('gulp')
@@ -14,17 +12,17 @@ gulp.create_tasks({
 	 * 收集brickyard插件里所有html碎片代码，压缩并通过 angularTemplateCache 包装成
 	 * 一个angular的module——'app.templates'，以便整合进打包文件
 	 */
-	bundle_templates: function () {
+	bundle_templates: () => {
 		return gulp.src([`${brickyard.dirs.tempModules}/**/*.html`])
 			.pipe(gulp.plugins.htmlmin({
 				collapseWhitespace: true,
-				conservativeCollapse: true
+				conservativeCollapse: true,
 			}))
 			.pipe(gulp.plugins.angularTemplatecache({
 				root: path.relative(brickyard.dirs.temp, brickyard.dirs.tempModules),
 				module: 'app.templates',
 				standalone: true,
-				moduleSystem: 'Browserify'
+				moduleSystem: 'Browserify',
 			}))
 			.pipe(gulp.dest(brickyard.dirs.tempModules))
 	},
@@ -38,38 +36,34 @@ gulp.create_tasks({
 	 * todo: 这里 shim 的处理 实在不优雅，需要优先重构
 	 * @returns {*}
 	 */
-	browserify: function () {
-		let bower_plugins = brickyard.scanBowerModules()
-		let frontend_plugins = brickyard.modules.frontend
-		_.each(frontend_plugins, (md) => { md.mainDest = path.join(brickyard.dirs.tempModules, md.mainDest) })
-
-		let shim = {
+	browserify: () => {
+		const shim = {
 			'brickyard-plugins': { path: `${brickyard.dirs.tempModules}/main.js`, exports: null },
-			templates: { path: `${brickyard.dirs.tempModules}/templates.js`, exports: null }
+			templates: { path: `${brickyard.dirs.tempModules}/templates.js`, exports: null },
 		}
 
 		// scan bower components
-		set_shim(shim, bower_plugins)
+		set_shim(shim, brickyard.scanBowerModules())
 		// scan brickyard plugins
-		set_shim(shim, frontend_plugins)
+		set_shim(shim, brickyard.modules.frontend)
 		// some fix
 		fix_shim(shim)
 
-		_.each(shim, function (s, name) {
+		_.each(shim, (s, name) => {
 			console.debug('%s : %j', name, s)
 		})
 
-		let opt = brickyard.config.browserify || {}
+		const opt = brickyard.config.browserify || {}
 		opt.shim = shim
 		opt.debug = brickyard.config.debug && !brickyard.argv.nomap
 
-		let p = gulp.src([`${brickyard.dirs.tempModules}/main.js`])
+		const p = gulp.src([`${brickyard.dirs.tempModules}/main.js`])
 			.pipe(gulp.plugins.browserify(opt))
 
 		if (!brickyard.config.debug) {
 			p.pipe(gulp.plugins.ngAnnotate())
 				.pipe(gulp.plugins.uglify())
-				.on('error', err => {
+				.on('error', (err) => {
 					console.error(err)
 				})
 		}
@@ -80,13 +74,14 @@ gulp.create_tasks({
 
 // composed tasks
 gulp.create_tasks({
-	'build-browserify': function (cb) {
+	'build-browserify': (cb) => {
 		if (!fs.existsSync(brickyard.dirs.temp)) {
-			return cb()
+			cb()
+			return
 		}
 
 		gulp.run_sequence('bundle_templates', 'browserify', cb)
-	}
+	},
 })
 
 gulp.register_sub_tasks('build', 30, 'build-browserify')
@@ -99,13 +94,32 @@ gulp.register_sub_tasks('build', 30, 'build-browserify')
  * @param dependencies 前端依赖集
  */
 function set_shim(shim, dependencies) {
-	_.each(dependencies, function (plugin, key) {
+	_.each(dependencies, (plugin, key) => {
 		// only use main defined plugins
-		if (!plugin.main) {return}
-		shim[key] = {
-			path: plugin.mainDest || plugin.main,
-			exports: null
+		if (plugin.main) {
+			const mainPath = path.isAbsolute(plugin.mainDest) ?
+				plugin.mainDest :
+				path.join(brickyard.dirs.tempModules, plugin.mainDest)
+			shim[key] = {
+				path: mainPath,
+				exports: null,
+			}
 		}
+		// scan devDependencies declared in frontend modules' pakcage.json
+		if (plugin.type !== 'frontend') {
+			return
+		}
+		_.each(plugin.devDependencies, (version, pckName) => {
+			if (shim[pckName]) {
+				console.log(pckName, 'is already set')
+				return
+			}
+			console.log('add frontend npm modules', pckName, 'for', key)
+			shim[pckName] = {
+				path: require.resolve(pckName),
+				exports: null,
+			}
+		})
 	})
 }
 
@@ -145,16 +159,13 @@ function try_set() {// obj,key1,key2,...,value
 	return injectable
 }
 
-let bower_json
-
 /**
  * 判断 bower.json 里面是否声明了对应依赖，以便注入可能的shim
  * @param name
  * @returns {boolean}
  */
 function is_declared(name) {
-	// return fs.existsSync(path.join(brickyard.dirs.bower, name))
-	return !!bower_json.dependencies[name]
+	return brickyard.bower.dependencies[name] || brickyard.npm.devDependencies[name]
 }
 
 /**
@@ -163,17 +174,13 @@ function is_declared(name) {
  * @param shim
  */
 function fix_shim(shim) {
-	if (!bower_json) {
-		bower_json = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/bower.json`))
-	}
-
 	let has_jquery = is_declared('jquery')
 	if (has_jquery) {
 		try_set(shim, 'jquery', 'exports', '$')
 	}
 
 	if (is_declared('angular')) {
-		try_set(shim, 'angular', 'exports', 'angular')
+		// try_set(shim, 'angular', 'exports', 'angular')
 		if (has_jquery) {
 			// load jquery before angular
 			try_set(shim, 'angular', 'depends', { jquery: '$' })
