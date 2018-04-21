@@ -111,10 +111,9 @@ function set_shim(shim, dependencies) {
 		}
 		_.each(plugin.devDependencies, (version, pckName) => {
 			if (shim[pckName]) {
-				console.log(pckName, 'is already set')
 				return
 			}
-			console.log('add frontend npm modules', pckName, 'for', key)
+			console.debug('Add frontend npm modules', pckName, 'for', key)
 			shim[pckName] = {
 				path: require.resolve(pckName),
 				exports: null,

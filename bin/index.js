@@ -66,6 +66,19 @@ const OPTION_MAP = {
 		type: 'number',
 		default: 1,
 	},
+	expose: {
+		desc: 'Expose port for dockerfile',
+		type: 'number',
+		default: 80,
+	},
+	tag: {
+		desc: 'Name the docker image',
+	},
+	'only-dockerfile': {
+		desc: 'Just write a dockerfile to output',
+		type: 'boolean',
+		default: false,
+	},
 }
 
 module.exports = yargs
@@ -111,6 +124,12 @@ module.exports = yargs
 	.command({
 		command: 'create-module <type> <dir> [name]',
 		desc: 'Create a brickyard module with name to the dir',
+		handler: cmdHandler(),
+	})
+	.command({
+		command: 'build-docker <plan...>',
+		desc: 'Create a dockerfile for the plan and build with docker',
+		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'expose', 'tag', 'only-dockerfile')),
 		handler: cmdHandler(),
 	})
 	.strict()
