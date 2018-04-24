@@ -23,6 +23,7 @@
     "run-sequence": "^2.1.0",
     "semver": "^5.4.1",
     "update-notifier": "^2.2.0",
+    "util.promisify": "^1.0.0",
     "yargs": "^6.6.0"
   },
   "devDependencies": {
