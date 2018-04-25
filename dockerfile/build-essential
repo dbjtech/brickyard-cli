@@ -4,8 +4,14 @@ RUN apk add tzdata --update --no-cache && cp /usr/share/zoneinfo/Asia/Shanghai /
 
 RUN apk add --no-cache python make g++ git
 
-RUN npm i -g --production --unsafe node-sass fibers && npm cache clean --force
+RUN mkdir /brickyard-app
 
-RUN npm i -g --production brickyard-cli && npm cache clean --force
+WORKDIR /brickyard-app
+
+RUN npm i -g npm@4
+
+RUN npm i -g --production brickyard-cli
+
+RUN npm i node-sass fibers
 
 CMD ["brickyard"]

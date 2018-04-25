@@ -11,23 +11,22 @@ npm i -g brickyard-cli
 <cmd> [args]
 
 Commands:
-  ls [plan...]                       Get the plan list of brickyard_modules
-  build <plan...>                    Build one or more plans
-  test <plan...>                     Test one or more plans
+  ls [plan..]                        Get the plan list of brickyard_modules
+  build <plan..>                     Build one or more plans
   run [dir]                          Run a brickyard app
+  test <plan..>                      Test modules of plans
   create-module <type> <dir> [name]  Create a brickyard module with name to the
                                      dir
+  build-docker <plan...>             Create a dockerfile for the plan and build
+                                     with docker
 
 Options:
+  --version            Show version number                             [boolean]
   --help               Show help                                       [boolean]
-  --color              Log with color                                  [boolean]
-  --debug              Use debug mode to build a plan                  [boolean]
+  --verbose, -v        Log level. 0: INFO, 1: DEBUG, 2: TRACE
+                                                            [count] [default: 0]
   --brickyard_modules  Path of brickyard_modules folder
                                                 [default: "./brickyard_modules"]
-  --config             Path of config.js                [default: "./config.js"]
-  --output, -o         Path of output                   [default: "./output"]
-  --dir                Path of the brickyard app for run or build        [default: "./output"]
-  -v, --verbose        Log level. 0: INFO, 1: DEBUG, 2: TRACE            [count]
 ```
 
 ### brickyard --version
@@ -74,6 +73,15 @@ mocha test mocha common-service-push
 
 options
 - --modules: Only test for the sepecified modules. Test all when empty. [default: test all modules]
+
+### brickyard build-docker plan
+Create a dockerfile and then run docker build. Your brickyard app will build in two docker containers.
+One for building, another for deploying or running.
+
+options
+- --expose: Expose port for dockerfile
+- --tag: Name the docker image
+- --only-dockerfile: Just write a dockerfile to output
 
 ### other options
 - --help: Show usage info
