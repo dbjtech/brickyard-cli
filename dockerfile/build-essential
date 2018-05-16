@@ -10,8 +10,8 @@ WORKDIR /brickyard-app
 
 RUN npm i -g npm@4
 
-RUN npm i -g --production brickyard-cli
-
 RUN npm i node-sass fibers
+
+RUN npm i -g --production brickyard-cli@5.0.1
 
 CMD ["brickyard"]
