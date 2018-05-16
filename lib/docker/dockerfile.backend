@@ -1,5 +1,5 @@
-#FROM dbjtech/brickyard-cli:build-essential as build-stage
-FROM local-brickyard as build-stage
+FROM dbjtech/brickyard-cli:build-essential as build-stage
+
 WORKDIR /brickyard-app/
 COPY <%=packageJsonPath%> ./package.json
 RUN npm i
