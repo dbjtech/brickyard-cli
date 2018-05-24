@@ -12,6 +12,6 @@ RUN npm i -g npm@4
 
 RUN npm i node-sass fibers
 
-RUN npm i -g --production brickyard-cli@5.0.1
+RUN npm i -g --production brickyard-cli@^5.1.0
 
 CMD ["brickyard"]
