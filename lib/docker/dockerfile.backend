@@ -17,7 +17,7 @@ COPY --from=build-stage /brickyard-app/output/package.json ./package.json
 RUN apk add --no-cache python make g++ && npm i --production && npm cache clean --force && apk del python make g++
 COPY --from=build-stage /brickyard-app/output/ ./
 VOLUME /brickyard-app
-CMD node .
+CMD node . --brickyard-app-name="<%=plans%>"
 <%if (expose) {%>
 EXPOSE <%=expose%>
 <%}%>
