@@ -17,6 +17,7 @@
     "lodash": "^4.17.10"
   },
   "dependencies": {
-    "brickyard-cli": "^5.0.1"
+    "brickyard-cli": "^5.0.1",
+    "yargs": "^6.6.0"
   }
 }
