@@ -14,11 +14,11 @@
     "find-node-modules": "^2.0.0",
     "fs-extra": "^7.0.1",
     "glob": "^7.1.3",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.1",
     "gulp-json-editor": "^2.5.1",
     "lodash": "~4.17.11",
     "minimatch": "^3.0.4",
-    "run-sequence": "^2.2.1",
+    "gulp4-run-sequence": "^0.3.2",
     "semver": "^6.0.0",
     "update-notifier": "^2.5.0",
     "yargs": "^13.2.2"
