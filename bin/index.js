@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 require('../lib/harmony.js')
 const yargs = require('yargs')
-const _ = require('lodash')
 const updateNotifier = require('update-notifier')
 const pkg = require('../package.json')
 
@@ -11,28 +10,10 @@ updateNotifier({
 	updateCheckInterval: 0,
 }).notify()
 
-function cmdHandler() {
-	return (argv) => {
-		if (argv._.length !== 1) {
-			throw new Error('Unique <cmd> is needed')
-		}
-		// node index.js
-		const params = ['node', './index.js']
-
-		// node index.js --gulpfile ./gulpfile.js
-		params.push('--gulpfile', argv.gulpfile ? argv.gulpfile : `${__dirname}/../lib/gulpfile.js`)
-
-		// node index.js --gulpfile ./gulpfile.js --cwd ${process.cwd()}
-		params.push('--cwd', process.cwd())
-
-		params.push('--color')
-
-		if (!argv.verbose) {
-			params.push('--silent')
-		}
-
-		process.nextTick(() => require('../lib/gulpfile.js')) // eslint-disable-line global-require
-	}
+function handler() {
+	process.nextTick(() => {
+		require('../lib/gulpfile.js') // eslint-disable-line global-require
+	})
 }
 
 const OPTION_MAP = {
@@ -81,6 +62,16 @@ const OPTION_MAP = {
 	},
 }
 
+function createBuilder(...options) {
+	const opt = options.reduce((obj, key) => {
+		if (OPTION_MAP[key]) {
+			obj[key] = OPTION_MAP[key] // eslint-disable-line no-param-reassign
+		}
+		return obj
+	}, {})
+	return args => args.options(opt)
+}
+
 module.exports = yargs
 	.usage('$0 <cmd> [args]')
 	.version()
@@ -101,36 +92,36 @@ module.exports = yargs
 	.command({
 		command: 'ls [plan..]',
 		desc: 'Get the plan list of brickyard_modules',
-		handler: cmdHandler(),
+		handler,
 	})
 	.command({
 		command: 'build <plan..>',
 		desc: 'Build one or more plans',
-		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'run', 'debug', 'watch')),
-		handler: cmdHandler(),
+		builder: createBuilder('dir', 'config', 'run', 'debug', 'watch'),
+		handler,
 	})
 	.command({
 		command: 'run [dir]',
 		desc: 'Run a brickyard app',
-		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'instances')),
-		handler: cmdHandler(),
+		builder: createBuilder('dir', 'config', 'instances'),
+		handler,
 	})
 	.command({
 		command: 'test <plan..>',
 		desc: 'Test modules of plans',
-		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'modules', 'debug', 'watch')),
-		handler: cmdHandler(),
+		builder: createBuilder('dir', 'config', 'modules', 'debug', 'watch'),
+		handler,
 	})
 	.command({
 		command: 'create-module <type> <dir> [name]',
 		desc: 'Create a brickyard module with name to the dir',
-		handler: cmdHandler(),
+		handler,
 	})
 	.command({
 		command: 'build-docker <plan...>',
 		desc: 'Create a dockerfile for the plan and build with docker',
-		builder: args => args.options(_.pick(OPTION_MAP, 'dir', 'config', 'expose', 'tag', 'only-dockerfile')),
-		handler: cmdHandler(),
+		builder: createBuilder('dir', 'config', 'expose', 'tag', 'only-dockerfile'),
+		handler,
 	})
 	.strict()
 	.argv

@@ -1,6 +1,6 @@
 {
   "name": "brickyard-cli",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "description": "",
   "main": "lib/brickyard",
   "bin": {
@@ -11,24 +11,21 @@
   "license": "ISC",
   "dependencies": {
     "@brickyard/logger": "^0.0.3",
-    "bluebird": "^3.5.0",
-    "find-node-modules": "^1.0.4",
-    "fs-extra": "^4.0.1",
-    "glob": "^7.1.2",
-    "gulp": "^3.9.1",
-    "gulp-json-editor": "^2.2.1",
-    "lodash": "~4.17.4",
+    "find-node-modules": "^2.0.0",
+    "fs-extra": "^7.0.1",
+    "glob": "^7.1.3",
+    "gulp": "^4.0.1",
+    "gulp-json-editor": "^2.5.1",
+    "lodash": "~4.17.11",
     "minimatch": "^3.0.4",
-    "run-sequence": "^2.1.0",
-    "semver": "^5.4.1",
-    "update-notifier": "^2.2.0",
-    "yargs": "^6.6.0"
+    "gulp4-run-sequence": "^0.3.2",
+    "semver": "^6.0.0",
+    "update-notifier": "^2.5.0",
+    "yargs": "^13.2.2"
   },
   "devDependencies": {
-    "eslint": "^4.5.0",
-    "eslint-config-airbnb": "^15.1.0",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^5.0.1",
-    "eslint-plugin-react": "^7.3.0"
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
   }
 }
