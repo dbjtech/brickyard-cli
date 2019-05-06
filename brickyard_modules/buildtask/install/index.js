@@ -50,7 +50,7 @@ const atomicTasks = {
 	 * 其中涉及到将 收集到的插件依赖数据 与 根目录的 package.json 合并
 	 * @returns {*|{delay}}
 	 */
-	export_npm_config: () => {
+	export_npm_config() {
 		const configPath = brickyard.getPackageJsonPath()
 		const config = brickyard.getPackageJson()
 		config.main = 'index.js'
@@ -75,7 +75,7 @@ const atomicTasks = {
 	/**
 	 * 检查已安装的npm modules
 	 */
-	npm_check_installed_npm_packages(cb) {
+	async npm_check_installed_npm_packages() {
 		const config = getConfig('package.json')
 		Object.assign(config.dependencies, config.devDependencies)
 
@@ -94,14 +94,12 @@ const atomicTasks = {
 				}
 			}
 		}
-
-		cb()
 	},
 
 	/**
 	 * 检查已安装的 bower components
 	 */
-	npm_check_installed_bower_packages(cb) {
+	async npm_check_installed_bower_packages() {
 		const config = getConfig('bower.json')
 		cache.installed_bower_packages = []
 		for (const key of Object.keys(config.dependencies)) {
@@ -119,8 +117,6 @@ const atomicTasks = {
 				}
 			}
 		}
-
-		cb()
 	},
 
 	/**
@@ -128,7 +124,7 @@ const atomicTasks = {
 	 * @param cb
 	 * @returns {*}
 	 */
-	npm_install: (cb) => {
+	async npm_install() {
 		const config = getConfig('package.json')
 		Object.assign(config.dependencies, config.devDependencies)
 
@@ -147,7 +143,6 @@ const atomicTasks = {
 		}
 
 		gulp.plugins = require('gulp-load-plugins')({ config })
-		cb()
 	},
 
 	/**
@@ -155,7 +150,7 @@ const atomicTasks = {
 	 * @param cb
 	 * @returns {*}
 	 */
-	bower_install(cb) {
+	async bower_install() {
 		const config = getConfig('bower.json')
 		let dependencies = _.difference(
 			Object.keys(config.dependencies),
@@ -166,48 +161,44 @@ const atomicTasks = {
 			dependencies = _.map(_.pick(config.dependencies, dependencies), getJoiner('#'))
 			console.log('bower install', brickyard.dirs.dest, dependencies)
 
-			const bower = require('bower')
-			bower.commands
-				.install(dependencies, { forceLatest: true }, {
-					cwd: brickyard.dirs.dest,
-					offline: brickyard.argv.offline,
-				})
-				.on('log', (log) => {
-					console.debug(`[${log.id}]`, log.message)
-				})
-				.on('error', (err) => {
-					cb(err)
-				})
-				.on('prompt', (prompts) => {
-					console.log('prompts', prompts)
-				})
-				.on('end', () => {
-					cb()
-				})
-		} else {
-			cb()
+			await new Promise((resolve, reject) => {
+				const bower = require('bower')
+				bower.commands
+					.install(dependencies, { forceLatest: true }, {
+						cwd: brickyard.dirs.dest,
+						offline: brickyard.argv.offline,
+					})
+					.on('log', (log) => {
+						console.debug(`[${log.id}]`, log.message)
+					})
+					.on('prompt', (prompts) => {
+						console.log('prompts', prompts)
+					})
+					.once('end', resolve)
+					.once('error', reject)
+			})
 		}
 	},
 
 	copy_starter_to_dest: () => gulp.src(`${__dirname}/starter/index.js`).pipe(gulp.dest(brickyard.dirs.dest)),
 
-	clean_buildtask_and_plan: (cb) => {
+	async clean_buildtask_and_plan() {
 		const fse = require('fs-extra')
 		if (!brickyard.argv.debug && !brickyard.argv.watch) {
 			fse.removeSync(path.join(brickyard.dirs.modules, 'buildtask'))
 			fse.removeSync(path.join(brickyard.dirs.modules, 'plan'))
 			fse.removeSync(path.join(brickyard.dirs.dest, 'bower.json'))
 		}
-		cb()
 	},
 }
 
 const composedTasks = {
-	install_dependencies: (cb) => {
+	install_dependencies(cb) {
 		gulp.run_sequence(
 			'export_npm_config', 'export_bower_config',
 			'npm_check_installed_npm_packages', 'npm_check_installed_bower_packages',
 			'npm_install', 'bower_install',
+			'npm_check_installed_bower_packages',
 			'copy_starter_to_dest',
 			cb,
 		)
