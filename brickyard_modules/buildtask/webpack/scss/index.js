@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const brickyard = require('brickyard')
+
 const exts = [
 	'.dynamic.scss',
 	'.scss',
@@ -7,7 +8,7 @@ const exts = [
 
 function tester(ext) {
 	return (absPath) => {
-		for (let i = 0; i < exts.length; i++) {
+		for (let i = 0; i < exts.length; i += 1) {
 			if (absPath.toLowerCase().endsWith(exts[i])) {
 				return exts[i] === ext
 			}
@@ -17,7 +18,7 @@ function tester(ext) {
 }
 
 
-brickyard.events.on('build-webpack-config', function(config) {
+brickyard.events.on('build-webpack-config', (config) => {
 	const ExtractTextPlugin = require('extract-text-webpack-plugin')
 	const etp = new ExtractTextPlugin('lib/style-scss.[contenthash:6].css')
 
