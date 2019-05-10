@@ -10,6 +10,7 @@ const tasks = {
 	 */
 	babel_build_es6_7_backend: () => {
 		const mergeStream = require('merge-stream')
+		const babel = require('gulp-babel')
 
 		return mergeStream(Object.keys(brickyard.modules.backend).map((id) => {
 			const plugin = brickyard.modules.backend[id]
@@ -19,7 +20,7 @@ const tasks = {
 					'!plugins/**/node_modules/**',
 					'!plugins/**/bower_components/**',
 				])
-				.pipe(gulp.plugins.babel({
+				.pipe(babel({
 					presets: ['env', 'stage-2'],
 					plugins: [],
 				}))
@@ -31,11 +32,10 @@ const tasks = {
 	 */
 	babel_build_es6_7_frontend: () => {
 		const babel = require('gulp-babel')
-
 		return gulp
 			.src(`${brickyard.dirs.tempModules}/**/*.{es6,es7}`)
 			.pipe(babel({
-				presets: ['@babel/preset-env'],
+				presets: ['env', 'stage-2'],
 				plugins: [],
 			}))
 			.pipe(gulp.dest(brickyard.dirs.tempModules))

@@ -10,14 +10,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "bower": "^1.8.4",
-    "fs-extra": "^6.0.1",
-    "gulp-json-editor": "^2.4.1",
+    "bower": "^1.8.8",
+    "fs-extra": "^7.0.1",
+    "gulp-json-editor": "^2.5.2",
     "gulp-load-plugins": "^1.5.0",
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.11"
   },
   "dependencies": {
-    "brickyard-cli": "^5.1.2",
-    "yargs": "^6.6.0"
+    "brickyard-cli": "^6.0.0",
+    "yargs": "^13.2.2"
   }
 }
