@@ -21,7 +21,7 @@ const tasks = {
 					'!plugins/**/bower_components/**',
 				])
 				.pipe(babel({
-					presets: ['@babel/preset-env'],
+					presets: ['env', 'stage-2'],
 					plugins: [],
 				}))
 				.pipe(gulp.dest(`${brickyard.dirs.modules}/${plugin.type}/${id}`))
@@ -35,7 +35,7 @@ const tasks = {
 		return gulp
 			.src(`${brickyard.dirs.tempModules}/**/*.{es6,es7}`)
 			.pipe(babel({
-				presets: ['@babel/preset-env'],
+				presets: ['env', 'stage-2'],
 				plugins: [],
 			}))
 			.pipe(gulp.dest(brickyard.dirs.tempModules))
