@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "lodash": "^4.6.1",
-    "ng-annotate-loader": "^0.1.0"
+    "lodash": "^4.17.11",
+    "ng-annotate-loader": "^0.6.1"
   }
 }
