@@ -13,7 +13,6 @@
     "merge-stream": "^1.0.1",
     "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
-    "gulp-template": "^5.0.0",
-    "lodash": "^4.17.11"
+    "gulp-template": "^5.0.0"
   }
 }

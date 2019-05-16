@@ -15,7 +15,7 @@ const tasks = {
 		gulp.run_sequence('build_fake_modules', 'build_pkg_package_json', 'build_pkg_execute', 'clean_fake_modules', cb)
 	},
 
-	build_fake_modules: () => {
+	build_fake_modules: async () => {
 		const mkdirp = require('mkdirp')
 		for (const dir of _.keys(module.require_alias_cache)) {
 			if (/^@?brickyard/.test(dir)) {
@@ -45,7 +45,7 @@ const tasks = {
 		exec(args).then(cb).catch(cb)
 	},
 
-	clean_fake_modules: () => {
+	clean_fake_modules: async () => {
 		const del = require('del')
 		del.sync([path.join(fakeModulesPath, 'brickyard'), path.join(fakeModulesPath, '@brickyard')])
 	},

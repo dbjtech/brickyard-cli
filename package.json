@@ -1,6 +1,6 @@
 {
   "name": "brickyard-cli",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "",
   "main": "lib/brickyard",
   "bin": {
@@ -12,7 +12,7 @@
   "dependencies": {
     "@brickyard/logger": "^0.0.3",
     "find-node-modules": "^2.0.0",
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^8.0.1",
     "glob": "^7.1.4",
     "gulp": "^4.0.2",
     "gulp-json-editor": "^2.5.2",
@@ -20,8 +20,8 @@
     "minimatch": "^3.0.4",
     "gulp4-run-sequence": "^0.3.3",
     "semver": "^6.0.0",
-    "update-notifier": "^2.5.0",
-    "yargs": "^13.2.2"
+    "update-notifier": "^3.0.0",
+    "yargs": "^13.2.4"
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^13.1.0",

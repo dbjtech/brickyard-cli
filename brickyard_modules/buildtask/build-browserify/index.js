@@ -1,10 +1,195 @@
 const path = require('path')
 const fs = require('fs')
+/* eslint-disable import/no-extraneous-dependencies, import/no-unresolved */
+/* eslint-disable global-require, no-param-reassign */
 const gulp = require('gulp')
-const brickyard = require('brickyard')
-const _ = require('lodash')
 
-const www_dir = `${brickyard.dirs.dest}/www`
+const brickyard = require('brickyard')
+
+const wwwDir = `${brickyard.dirs.dest}/www`
+
+/**
+ * 将每一个前端依赖声明的 main 入口注入 shim 对象，
+ * 以便 browserify 打包代码时可以引入对应代码
+ *
+ * @param shim 被注入数据shim对象
+ * @param dependencies 前端依赖集
+ */
+function setShim(shim, dependencies) {
+	Object.keys(dependencies).forEach((key) => {
+		const plugin = dependencies[key]
+		// only use main defined plugins
+		if (plugin.main) {
+			const mainPath = path.isAbsolute(plugin.mainDest)
+				? plugin.mainDest
+				: path.join(brickyard.dirs.tempModules, plugin.mainDest)
+			shim[key] = {
+				path: mainPath,
+				exports: null,
+			}
+		}
+		// scan devDependencies declared in frontend modules' pakcage.json
+		if (plugin.type !== 'frontend') {
+			return
+		}
+
+		if (plugin.devDependencies) {
+			Object.keys(plugin.devDependencies).forEach((pckName) => {
+				if (shim[pckName]) {
+					return
+				}
+				console.debug('Add frontend npm modules', pckName, 'for', key)
+				shim[pckName] = {
+					path: require.resolve(pckName),
+					exports: null,
+				}
+			})
+		}
+	})
+}
+
+/**
+ * 利用 arguments 来读取传入参数，第一个为被注入对象
+ * 余下的参数数组（余参数组）前面都是可能多层嵌套的对象的 key，最后一个才是 value
+ * 组装成配置对象。
+ * i.e.
+ * {
+ *   key1: {
+ *      key2: value
+ *   }
+ * }
+ *
+ * @returns {T|{}}
+ */
+function trySet(...args) { // obj,key1,key2,...,value
+	if (args.length < 3) {
+		throw new Error('not enough param')
+	}
+
+	const injectable = args.shift() || {}
+	const value = args.pop()
+	let obj = injectable
+
+	// 循环组装嵌套对象
+	for (let i = 0; i < args.length - 1; i += 1) {
+		const key = args[i]
+		obj[key] = obj[key] || {}
+		obj = obj[key]
+	}
+
+	obj[args[args.length - 1]] = value
+
+	return injectable
+}
+
+/**
+ * 判断 bower.json 里面是否声明了对应依赖，以便注入可能的shim
+ * @param name
+ * @returns {boolean}
+ */
+function isDeclared(name) {
+	return brickyard.bower.dependencies[name] || brickyard.npm.devDependencies[name]
+}
+
+/**
+ * 对一些非CommonJS兼容的前端依赖进行shim配置
+ *
+ * @param shim
+ */
+function fixShim(shim) {
+	const hasJquery = isDeclared('jquery')
+	if (hasJquery) {
+		trySet(shim, 'jquery', 'exports', '$')
+	}
+
+	if (isDeclared('angular')) {
+		// trySet(shim, 'angular', 'exports', 'angular')
+		if (hasJquery) {
+			// load jquery before angular
+			trySet(shim, 'angular', 'depends', { jquery: '$' })
+		}
+	}
+
+	// socket.io-client @ qiji-portal,admin-common-request
+	if (isDeclared('socket.io-client')) {
+		const paths = ['/socket.io-client/dist/socket.io.js', '/socket.io-client/socket.io.js']
+		for (let i = 0; i < paths.length; i += 1) {
+			if (fs.existsSync(brickyard.dirs.bower + paths[i])) {
+				trySet(shim, 'socket.io-client', { path: brickyard.dirs.bower + paths[i], exports: null })
+				break
+			}
+		}
+	}
+
+	// qrcode @ admin-shop
+	if (isDeclared('angular-qr')) {
+		delete shim['qrcode.js']
+		trySet(shim, 'angular-qr', 'depends', { angular: 'angular', qrcode: 'QRCode' })
+		trySet(shim, 'qrcode', { path: `${brickyard.dirs.bower}/angular-qr/lib/qrcode.js`, exports: 'QRCode' })
+	}
+
+	// highcharts @ admin-statistic
+	if (isDeclared('highcharts')) {
+		trySet(shim, 'highcharts', 'exports', 'Highcharts')
+		trySet(shim, 'highcharts-more', {
+			path: `${brickyard.dirs.bower}/highcharts/highcharts-more.js`,
+			exports: 'null',
+		})
+	}
+
+	// messenger @ admin-sprite-battle
+	if (isDeclared('messenger')) {
+		trySet(shim, 'messenger', 'exports', 'Messenger')
+	}
+
+	// qiji-portal
+	if (isDeclared('angular-strap')) {
+		trySet(shim, 'angular-strap', { path: `${brickyard.dirs.bower}/angular-strap/fix/angular-strap.js`, exports: null })
+		trySet(shim, 'angular-strap-tpl', {
+			path: `${brickyard.dirs.bower}/angular-strap/dist/angular-strap.tpl.js`,
+			exports: null,
+		})
+	}
+
+	if (isDeclared('scrollmagic')) {
+		trySet(shim, 'gasp.animation', {
+			path: `${brickyard.dirs.bower}/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js`,
+			exports: null,
+		})
+		trySet(shim, 'jquery.ScrollMagic', {
+			path: `${brickyard.dirs.bower}/scrollmagic/scrollmagic/uncompressed/plugins/jquery.ScrollMagic.js`,
+			exports: null,
+		})
+	}
+
+	if (isDeclared('angular-i18n')) {
+		trySet(shim, 'angular-locale_zh-cn', {
+			path: `${brickyard.dirs.bower}/angular-i18n/angular-locale_zh-cn.js`,
+			exports: null,
+		})
+	}
+
+	if (isDeclared('blueimp-md5')) {
+		trySet(shim, 'blueimp-md5', 'exports', 'md5')
+	}
+
+	if (isDeclared('angularjs-slider')) {
+		trySet(shim, 'angularjs-slider', { path: `${brickyard.dirs.bower}/angularjs-slider/dist/rzslider.js`, exports: null })
+	}
+
+	if (isDeclared('animate.css')) {
+		delete shim['animate.css']
+	}
+
+	if (isDeclared('ztree_v3')) {
+		delete shim.ztree_v3
+		trySet(shim, 'zTree', { path: `${brickyard.dirs.bower}/ztree_v3/js/jquery.ztree.all.js`, exports: null })
+	}
+
+	if (isDeclared('ui-navbar')) {
+		trySet(shim, 'ui-navbar', { path: `${brickyard.dirs.bower}/ui-navbar/release/js/ui-navbar.js`, exports: null })
+	}
+}
 
 // atomic tasks
 gulp.create_tasks({
@@ -13,12 +198,15 @@ gulp.create_tasks({
 	 * 一个angular的module——'app.templates'，以便整合进打包文件
 	 */
 	bundle_templates: () => {
+		const htmlmin = require('gulp-htmlmin')
+		const angularTemplatecache = require('gulp-angular-templatecache')
+
 		return gulp.src([`${brickyard.dirs.tempModules}/**/*.html`])
-			.pipe(gulp.plugins.htmlmin({
+			.pipe(htmlmin({
 				collapseWhitespace: true,
 				conservativeCollapse: true,
 			}))
-			.pipe(gulp.plugins.angularTemplatecache({
+			.pipe(angularTemplatecache({
 				root: path.relative(brickyard.dirs.temp, brickyard.dirs.tempModules),
 				module: 'app.templates',
 				standalone: true,
@@ -37,39 +225,39 @@ gulp.create_tasks({
 	 * @returns {*}
 	 */
 	browserify: () => {
+		const browserify = require('gulp-browserify')
+		const ngAnnotate = require('gulp-ng-annotate')
+		const uglify = require('gulp-uglify')
+
 		const shim = {
 			'brickyard-plugins': { path: `${brickyard.dirs.tempModules}/main.js`, exports: null },
 			templates: { path: `${brickyard.dirs.tempModules}/templates.js`, exports: null },
 		}
 
 		// scan bower components
-		set_shim(shim, brickyard.scanBowerModules())
+		setShim(shim, brickyard.scanBowerModules())
 		// scan brickyard plugins
-		set_shim(shim, brickyard.modules.frontend)
+		setShim(shim, brickyard.modules.frontend)
 		// some fix
-		fix_shim(shim)
+		fixShim(shim)
 
-		_.each(shim, (s, name) => {
-			console.debug('%s : %j', name, s)
+		Object.keys(shim).forEach((name) => {
+			console.debug('%s : %j', name, shim[name])
 		})
 
 		const opt = brickyard.config.browserify || {}
 		opt.shim = shim
 		opt.debug = brickyard.config.debug && !brickyard.argv.nomap
-
-		const p = gulp.src([`${brickyard.dirs.tempModules}/main.js`])
-			.pipe(gulp.plugins.browserify(opt))
+		const p = gulp
+			.src([`${brickyard.dirs.tempModules}/main.js`])
+			.pipe(browserify(opt))
 
 		if (!brickyard.config.debug) {
-			p.pipe(gulp.plugins.ngAnnotate())
-				.pipe(gulp.plugins.uglify())
-				.on('error', (err) => {
-					console.error(err)
-				})
+			p.pipe(ngAnnotate()).pipe(uglify())
 		}
 
-		return p.pipe(gulp.dest(www_dir))
-	}
+		return p.pipe(gulp.dest(wwwDir))
+	},
 })
 
 // composed tasks
@@ -85,184 +273,3 @@ gulp.create_tasks({
 })
 
 gulp.register_sub_tasks('build', 30, 'build-browserify')
-
-/**
- * 将每一个前端依赖声明的 main 入口注入 shim 对象，
- * 以便 browserify 打包代码时可以引入对应代码
- *
- * @param shim 被注入数据shim对象
- * @param dependencies 前端依赖集
- */
-function set_shim(shim, dependencies) {
-	_.each(dependencies, (plugin, key) => {
-		// only use main defined plugins
-		if (plugin.main) {
-			const mainPath = path.isAbsolute(plugin.mainDest) ?
-				plugin.mainDest :
-				path.join(brickyard.dirs.tempModules, plugin.mainDest)
-			shim[key] = {
-				path: mainPath,
-				exports: null,
-			}
-		}
-		// scan devDependencies declared in frontend modules' pakcage.json
-		if (plugin.type !== 'frontend') {
-			return
-		}
-		_.each(plugin.devDependencies, (version, pckName) => {
-			if (shim[pckName]) {
-				return
-			}
-			console.debug('Add frontend npm modules', pckName, 'for', key)
-			shim[pckName] = {
-				path: require.resolve(pckName),
-				exports: null,
-			}
-		})
-	})
-}
-
-/**
- * 利用 arguments 来读取传入参数，第一个为被注入对象
- * 余下的参数数组（余参数组）前面都是可能多层嵌套的对象的 key，最后一个才是 value
- * 组装成配置对象。
- * i.e.
- * {
- *   key1: {
- *      key2: value
- *   }
- * }
- *
- * @returns {T|{}}
- */
-function try_set() {// obj,key1,key2,...,value
-	let args = Array.from(arguments)
-
-	if (args.length < 3) {
-		throw new Error('not enough param')
-	}
-
-	let injectable = args.shift() || {}
-	let value = args.pop()
-	let obj = injectable
-
-	// 循环组装嵌套对象
-	for (let i = 0; i < args.length - 1; i++) {
-		let key = args[i]
-		obj[key] = obj[key] || {}
-		obj = obj[key]
-	}
-
-	obj[args[args.length - 1]] = value
-
-	return injectable
-}
-
-/**
- * 判断 bower.json 里面是否声明了对应依赖，以便注入可能的shim
- * @param name
- * @returns {boolean}
- */
-function is_declared(name) {
-	return brickyard.bower.dependencies[name] || brickyard.npm.devDependencies[name]
-}
-
-/**
- * 对一些非CommonJS兼容的前端依赖进行shim配置
- *
- * @param shim
- */
-function fix_shim(shim) {
-	let has_jquery = is_declared('jquery')
-	if (has_jquery) {
-		try_set(shim, 'jquery', 'exports', '$')
-	}
-
-	if (is_declared('angular')) {
-		// try_set(shim, 'angular', 'exports', 'angular')
-		if (has_jquery) {
-			// load jquery before angular
-			try_set(shim, 'angular', 'depends', { jquery: '$' })
-		}
-	}
-
-	// socket.io-client @ qiji-portal,admin-common-request
-	if (is_declared('socket.io-client')) {
-		let paths = ['/socket.io-client/dist/socket.io.js', '/socket.io-client/socket.io.js']
-		for (let i = 0; i < paths.length; i++) {
-			if (fs.existsSync(brickyard.dirs.bower + paths[i])) {
-				try_set(shim, 'socket.io-client', { path: brickyard.dirs.bower + paths[i], exports: null })
-				break
-			}
-		}
-	}
-
-	// qrcode @ admin-shop
-	if (is_declared('angular-qr')) {
-		delete shim['qrcode.js']
-		try_set(shim, 'angular-qr', 'depends', { angular: 'angular', qrcode: 'QRCode' })
-		try_set(shim, 'qrcode', { path: `${brickyard.dirs.bower}/angular-qr/lib/qrcode.js`, exports: 'QRCode' })
-	}
-
-	// highcharts @ admin-statistic
-	if (is_declared('highcharts')) {
-		try_set(shim, 'highcharts', 'exports', 'Highcharts')
-		try_set(shim, 'highcharts-more', { 
-			path: `${brickyard.dirs.bower}/highcharts/highcharts-more.js`,
-			exports: 'null',
-		})
-	}
-
-	// messenger @ admin-sprite-battle
-	if (is_declared('messenger')) {
-		try_set(shim, 'messenger', 'exports', 'Messenger')
-	}
-
-	// qiji-portal
-	if (is_declared('angular-strap')) {
-		try_set(shim, 'angular-strap', { path: `${brickyard.dirs.bower}/angular-strap/fix/angular-strap.js`, exports: null })
-		try_set(shim, 'angular-strap-tpl', {
-			path: `${brickyard.dirs.bower}/angular-strap/dist/angular-strap.tpl.js`,
-			exports: null
-		})
-	}
-
-	if (is_declared('scrollmagic')) {
-		try_set(shim, 'gasp.animation', {
-			path: `${brickyard.dirs.bower}/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js`,
-			exports: null
-		})
-		try_set(shim, 'jquery.ScrollMagic', {
-			path: `${brickyard.dirs.bower}/scrollmagic/scrollmagic/uncompressed/plugins/jquery.ScrollMagic.js`,
-			exports: null
-		})
-	}
-
-	if (is_declared('angular-i18n')) {
-		try_set(shim, 'angular-locale_zh-cn', {
-			path: `${brickyard.dirs.bower}/angular-i18n/angular-locale_zh-cn.js`,
-			exports: null
-		})
-	}
-
-	if (is_declared('blueimp-md5')) {
-		try_set(shim, 'blueimp-md5', 'exports', 'md5')
-	}
-
-	if (is_declared('angularjs-slider')) {
-		try_set(shim, 'angularjs-slider', { path: `${brickyard.dirs.bower}/angularjs-slider/dist/rzslider.js`, exports: null })
-	}
-
-	if (is_declared('animate.css')) {
-		delete shim['animate.css']
-	}
-
-	if (is_declared('ztree_v3')) {
-		delete shim['ztree_v3']
-		try_set(shim, 'zTree', { path: `${brickyard.dirs.bower}/ztree_v3/js/jquery.ztree.all.js`, exports: null })
-	}
-
-	if (is_declared('ui-navbar')) {
-		try_set(shim, 'ui-navbar', { path: `${brickyard.dirs.bower}/ui-navbar/release/js/ui-navbar.js`, exports: null })
-	}
-}

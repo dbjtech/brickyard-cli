@@ -5,8 +5,5 @@
   "description": "collect angular NgModule declarations",
   "main": "index.ts",
   "author": "brickyard-developer",
-  "license": "ISC",
-  "devDependencies": {
-    "lodash": "^4.17.11"
-  }
+  "license": "ISC"
 }
