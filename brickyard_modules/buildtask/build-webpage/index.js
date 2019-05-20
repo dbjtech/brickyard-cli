@@ -9,7 +9,7 @@ gulp.create_tasks({
 	/**
 	 * 将前端插件内对应的资源复制到临时目录
 	 */
-	build_frontend_plugins_temp: async () => {
+	build_frontend_plugins_temp: (cb) => {
 		const mergeStream = require('merge-stream')
 
 		const streams = Object.keys(brickyard.modules.frontend).map((id) => {
@@ -25,6 +25,8 @@ gulp.create_tasks({
 		if (streams.length) {
 			return mergeStream(streams)
 		}
+
+		cb()
 		return undefined
 	},
 

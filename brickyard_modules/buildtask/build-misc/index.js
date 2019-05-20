@@ -47,8 +47,9 @@ gulp.create_tasks({
 	 * 将临时目录下指定的资源文件复制到发布目录 www 下
 	 * 如果没有使用 browserify/webpack，js文件也算资源
 	 */
-	build_plugins_misc: () => {
+	build_plugins_misc: (cb) => {
 		if (brickyard.modules.buildtask['buildtask-webpack-build']) {
+			cb()
 			return null
 		}
 		const src = [`${brickyard.dirs.temp}/**/*.{css,map,gif,jpg,jpeg,png,ico,svg,woff,woff2,eot,ttf,xsd,wsdl,mp3,wav}`]
@@ -66,10 +67,11 @@ gulp.create_tasks({
 	 *
 	 * @returns {*|Object}
 	 */
-	build_misc_template_html: () => {
+	build_misc_template_html: (cb) => {
 		const mergeStream = require('merge-stream')
 		const template = brickyard.config.misc && brickyard.config.misc.template
 		if (_.isEmpty(template)) {
+			cb()
 			return null
 		}
 
@@ -104,11 +106,12 @@ gulp.create_tasks({
 	 * 将项目配置里面的 misc.others 对应的文件拷贝到生成目录
 	 * @returns {*}
 	 */
-	build_misc_other: () => {
+	build_misc_other: (cb) => {
 		const mergeStream = require('merge-stream')
 		const others = brickyard.config.misc && brickyard.config.misc.others
 
 		if (_.isEmpty(others)) {
+			cb()
 			return null
 		}
 

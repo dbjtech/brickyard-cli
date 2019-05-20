@@ -15,8 +15,9 @@ gulp.create_tasks({
 	/**
 	 * 压缩 css 文件
 	 */
-	async minify_css() {
+	minify_css(cb) {
 		if (brickyard.config.debug) {
+			cb()
 			return undefined
 		}
 

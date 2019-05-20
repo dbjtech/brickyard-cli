@@ -1,5 +1,3 @@
-'use strict'
-
 const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
@@ -9,8 +7,8 @@ const brickyard = require('brickyard')
 
 const www_dir = `${brickyard.dirs.dest}/www`
 
-let configs = []
-let alias = {}
+const configs = []
+const alias = {}
 let compiler
 
 function join_cwd_if_relative(...p) {
@@ -20,13 +18,13 @@ function join_cwd_if_relative(...p) {
 	return path.join(process.cwd(), ...p)
 }
 
-let tasks = {
-	build_entry: function() {
+const tasks = {
+	build_entry() {
 		alias['brickyard-plugins'] = join_cwd_if_relative(brickyard.dirs.tempModules, 'main.js')
 		return gulp.src(path.join(__dirname, 'main.js'))
-			.pipe(gulp.plugins.data(function() {
-				let injection = {}
-				_.each(brickyard.modules.frontend, function(plugin, key) {
+			.pipe(gulp.plugins.data(() => {
+				const injection = {}
+				_.each(brickyard.modules.frontend, (plugin, key) => {
 					injection[key] = {
 						id: key,
 					}
@@ -36,19 +34,21 @@ let tasks = {
 			.pipe(gulp.plugins.template())
 			.pipe(gulp.dest(brickyard.dirs.tempModules))
 	},
-	collect_plugin_configs: function() {
-		let files = glob.sync(`${brickyard.dirs.tempModules}/**/*webpack-config.js`)
+
+	async collect_plugin_configs() {
+		const files = glob.sync(`${brickyard.dirs.tempModules}/**/*webpack-config.js`)
 		console.debug('plugins webpack-configs', files)
 		if (_.isEmpty(files)) {
 			throw new Error('no webpack-config is scanned')
 		}
-		_.each(files, function(file) {
+		_.each(files, (file) => {
 			configs.push(require(join_cwd_if_relative(file)))
 		})
 	},
-	alias_config: function() {
+
+	async alias_config() {
 		// brickyard plugin
-		_.each(brickyard.modules.frontend, function(plugin, pid) {
+		_.each(brickyard.modules.frontend, (plugin, pid) => {
 			const modulePath = join_cwd_if_relative(brickyard.dirs.tempModules, plugin.name, plugin.main)
 			alias[pid] = modulePath
 			alias[`brickyard/${pid}`] = modulePath
@@ -57,10 +57,10 @@ let tasks = {
 			alias[`@brickyard\\${pid}`] = modulePath
 		})
 		// bower
-		let bower_conf = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/bower.json`))
-		let bower_plugins = brickyard.scanBowerModules()
+		const bower_conf = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/bower.json`))
+		const bower_plugins = brickyard.scanBowerModules()
 
-		_.each(bower_plugins, function(plugin, pid) {
+		_.each(bower_plugins, (plugin, pid) => {
 			if (bower_conf.dependencies[pid] && plugin.main) {
 				try {
 					require.resolve(pid)
@@ -72,7 +72,8 @@ let tasks = {
 		})
 		// console.debug('webpack config alias', alias)
 	},
-	webpack_config: () => {
+
+	async webpack_config() {
 		const webpack = require('webpack')
 		_.each(configs, (config) => {
 			_.defaultsDeep(config, {
@@ -112,7 +113,8 @@ let tasks = {
 
 		console.debug('webpack config:', JSON.stringify(configs, null, 4))
 	},
-	webpack_build_with_config: function(cb) {
+
+	webpack_build_with_config(cb) {
 		const webpack = require('webpack')
 		compiler = webpack(configs)
 
@@ -123,7 +125,7 @@ let tasks = {
 			version: true,
 			hash: true,
 			timings: true,
-			chunks: false
+			chunks: false,
 		}
 		if (brickyard.argv.watch) {
 			if (brickyard.modules.buildtask['webpack-dev-server']) {
@@ -131,26 +133,29 @@ let tasks = {
 				cb()
 				return
 			}
-			let callback = cb
 			compiler.watch({
 				poll: brickyard.argv.polling,
-			}, function(err, stats) {
-				if (err) throw err
-				console.info('webpack watch', stats.toString(outputOption))
-				if (callback) {
-					callback()
-					callback = null
+			}, (err, stats) => {
+				if (err) {
+					cb(err)
+					return
 				}
+				console.info('webpack watch', stats.toString(outputOption))
+				cb()
 			})
 		} else {
-			compiler.run(function(err, stats) {
-				if (err) throw err
+			compiler.run((err, stats) => {
+				if (err) {
+					cb(err)
+					return
+				}
 				console.info('webpack build', stats.toString(outputOption))
 				cb()
 			})
 		}
 	},
-	clean_webpack_frontend_temp: () => {
+
+	clean_webpack_frontend_temp: async () => {
 		const fse = require('fs-extra')
 		if (!brickyard.argv.debug && !brickyard.argv.watch) {
 			fse.removeSync(brickyard.dirs.temp)

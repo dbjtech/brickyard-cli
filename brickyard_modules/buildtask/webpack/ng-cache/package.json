@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "lodash": "^4.17.11",
     "ng-cache-loader": "0.0.26"
   }
 }
