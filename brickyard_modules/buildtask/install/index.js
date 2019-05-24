@@ -195,10 +195,8 @@ const atomicTasks = {
 const composedTasks = {
 	install_dependencies(cb) {
 		gulp.run_sequence(
-			'export_npm_config', 'export_bower_config',
-			'npm_check_installed_npm_packages', 'npm_check_installed_bower_packages',
-			'npm_install', 'bower_install',
-			'npm_check_installed_bower_packages',
+			'export_npm_config', 'npm_check_installed_npm_packages', 'npm_install',
+			'export_bower_config', 'npm_check_installed_bower_packages', 'bower_install',
 			'copy_starter_to_dest',
 			cb,
 		)
