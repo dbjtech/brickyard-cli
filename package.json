@@ -1,6 +1,6 @@
 {
   "name": "brickyard-cli",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "",
   "main": "lib/brickyard",
   "bin": {
@@ -16,10 +16,10 @@
     "glob": "^7.1.4",
     "gulp": "^4.0.2",
     "gulp-json-editor": "^2.5.2",
+    "gulp4-run-sequence": "^0.3.3",
     "lodash": "^4.17.11",
     "minimatch": "^3.0.4",
-    "gulp4-run-sequence": "^0.3.3",
-    "semver": "^6.0.0",
+    "semver": "6.0.0",
     "update-notifier": "^3.0.0",
     "yargs": "^13.2.4"
   },
