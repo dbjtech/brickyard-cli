@@ -3,7 +3,6 @@ const path = require('path')
 const fs = require('fs')
 const _ = require('lodash')
 const gulp = require('gulp')
-const glob = require('glob')
 const fnm = require('find-node-modules')
 const jsonEditor = require('gulp-json-editor')
 const brickyard = require('brickyard')
@@ -78,29 +77,6 @@ const atomicTasks = {
 					console.debug('npm exists', modulePath)
 					cache.installed_npm_packages.push(key)
 					break
-				}
-			}
-		}
-	},
-
-	/**
-	 * 检查已安装的 bower components
-	 */
-	async npm_check_installed_bower_packages() {
-		const config = getConfig('bower.json')
-		cache.installed_bower_packages = []
-		for (const key of Object.keys(config.dependencies)) {
-			const modulePath = `${brickyard.dirs.bower}/${key}`
-
-			if (fs.existsSync(modulePath)) {
-				const existed = fs.existsSync(`${modulePath}/bower.json`)
-					|| fs.existsSync(`${modulePath}/package.json`)
-					|| glob.sync(`${modulePath}/**/*.js`).length !== 0
-
-				if (!existed) {
-					console.warn(`${modulePath} is not well installed`)
-				} else {
-					cache.installed_bower_packages.push(key)
 				}
 			}
 		}

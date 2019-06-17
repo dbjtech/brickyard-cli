@@ -13,7 +13,6 @@ gulp.create_tasks({
 		}
 
 		const webpack = require('webpack')
-		const NgAnnotatePlugin = require('ng-annotate-webpack-plugin')
 
 		const alias = {}
 		Object.keys(brickyard.modules.frontend).forEach((key) => {
@@ -32,15 +31,13 @@ gulp.create_tasks({
 					{ test: /\.(woff|woff2|eot|ttf|otf)$/, use: ['file-loader'] },
 					{ test: /\.svg$/, use: ['svg-inline-loader'] },
 					{ test: /\.(html)$/, use: ['html-loader'] },
+					{ test: /\.js$/, exclude: /node_modules/, use: ['ng-annotate-loader'] },
 				],
 			},
 			plugins: [
 				new webpack.ProvidePlugin({
 					$: 'jquery',
 					jQuery: 'jquery',
-				}),
-				new NgAnnotatePlugin({
-					add: true,
 				}),
 			],
 			node: {
