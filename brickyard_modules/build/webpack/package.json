@@ -1,0 +1,22 @@
+{
+  "name": "build-webpack",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "webpack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^3.0.0",
+    "file-loader": "^4.0.0",
+    "html-loader": "^0.5.5",
+    "jquery": "^3.4.1",
+    "ng-annotate-loader": "^0.6.1",
+    "style-loader": "^0.23.1",
+    "svg-inline-loader": "^0.8.0",
+    "webpack": "^4.34.0"
+  }
+}

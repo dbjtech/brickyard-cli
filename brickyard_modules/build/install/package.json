@@ -1,0 +1,19 @@
+{
+  "name": "buill-install",
+  "version": "1.0.0",
+  "brickyard-module-type": "buildtask",
+  "description": "安装npm和bower依赖",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "fs-extra": "^8.0.0",
+    "gulp-load-plugins": "^1.5.0"
+  },
+  "dependencies": {
+    "brickyard-cli": "^6.0.0"
+  }
+}
