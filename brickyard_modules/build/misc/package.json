@@ -10,9 +10,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "merge-stream": "^1.0.1",
-    "gulp-rename": "^1.4.0",
-    "gulp-replace": "^1.0.0",
     "gulp-template": "^5.0.0"
   }
 }

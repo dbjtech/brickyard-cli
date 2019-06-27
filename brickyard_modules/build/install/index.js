@@ -1,136 +1,100 @@
 /* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, global-require */
 const path = require('path')
 const fs = require('fs')
+const util = require('util')
+
+const brickyard = require('brickyard')
 const _ = require('lodash')
 const gulp = require('gulp')
-const fnm = require('find-node-modules')
 const jsonEditor = require('gulp-json-editor')
-const brickyard = require('brickyard')
-const semver = require('semver')
+const fse = require('fs-extra')
+
 const npm = require('./npm.js')
 
-const cache = {}
-
 /**
- * 获取 生成目录下 对应名称的文件（主要是*.json）
- * @param fileName
- * @returns {*}
+ * 导出 package.json 文件到生成目录
+ * 其中涉及到将 收集到的插件依赖数据 与 根目录的 package.json 合并
+ * @returns {*|{delay}}
  */
-function getConfig(fileName) {
-	if (cache[fileName]) {
-		return cache[fileName]
-	}
-
-	cache[fileName] = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/${fileName}`))
-	return cache[fileName]
+function exportNpmConfig() {
+	return gulp.src(brickyard.getPackageJsonPath())
+		.pipe(jsonEditor(Object.assign(brickyard.getPackageJson(), {
+			main: 'index.js',
+			bin: {
+				brickyard: 'index.js',
+			},
+		})))
+		.pipe(gulp.dest(brickyard.dirs.dest))
 }
 
-/**
- * 返回依赖数据合成器，用于合成对象某个属性的键值的字符串
- * 例如 k = 'angular' v = '1.4.3' => 'angular@1.4.3'
- *
- * @param sep
- * @returns {Function}
- */
-function getJoiner(sep) {
-	return (v, k) => {
-		if (/(https?|git):/.test(v)) {
-			return v
-		}
-		return v.indexOf(sep) === -1 ? k + sep + v : v
-	}
-}
-
-const atomicTasks = {
-	/**
-	 * 导出 package.json 文件到生成目录
-	 * 其中涉及到将 收集到的插件依赖数据 与 根目录的 package.json 合并
-	 * @returns {*|{delay}}
-	 */
-	export_npm_config() {
-		const configPath = brickyard.getPackageJsonPath()
-		const config = brickyard.getPackageJson()
-		config.main = 'index.js'
-		config.bin = { brickyard: 'index.js' }
-
-		return gulp.src(configPath)
-			.pipe(jsonEditor(config))
-			.pipe(gulp.dest(brickyard.dirs.dest))
-	},
+const npmInstall = (() => {
+	const existsAsync = util.promisify(fs.exists).bind(fs)
 
 	/**
-	 * 检查已安装的npm modules
+	 * 返回依赖数据合成器，用于合成对象某个属性的键值的字符串
+	 * 例如 k = 'angular' v = '1.4.3' => 'angular@1.4.3'
+	 *
+	 * @param sep
+	 * @returns {Function}
 	 */
-	async npm_check_installed_npm_packages() {
-		const config = getConfig('package.json')
-		Object.assign(config.dependencies, config.devDependencies)
-
-		cache.installed_npm_packages = []
-
-		// 获取所有 node-modules 目录路径
-		const paths = fnm()
-		for (const key of Object.keys(config.dependencies)) {
-			for (const p of paths) {
-				const modulePath = path.join(p, key)
-
-				if (fs.existsSync(modulePath)) {
-					console.debug('npm exists', modulePath)
-					cache.installed_npm_packages.push(key)
-					break
-				}
+	function getJoiner(sep) {
+		return (v, k) => {
+			if (/(https?|git):/.test(v)) {
+				return v
 			}
+			return v.indexOf(sep) === -1 ? k + sep + v : v
 		}
-	},
+	}
 
 	/**
 	 * 安装 合成的package.json 已声明但缺失的 node_modules
 	 * @param cb
 	 * @returns {*}
 	 */
-	async npm_install() {
-		const config = getConfig('package.json')
-		Object.assign(config.dependencies, config.devDependencies)
+	return async () => {
+		const config = brickyard.getPackageJson()
+		const configDependencies = Object.assign(config.dependencies, config.devDependencies)
+		const configDependenciesKeys = Object.keys(configDependencies)
 
-		let dependencies = _.difference(Object.keys(config.dependencies), cache.installed_npm_packages)
+		// 获取所有 node-modules 目录路径
+		const installedDependenciesKeys = (await Promise.all(configDependenciesKeys.map(async (key) => {
+			const modulePath = path.join('node_modules', key)
+
+			const exists = await existsAsync(modulePath)
+			if (exists) {
+				console.debug('npm exists', modulePath)
+			}
+			return [key, exists]
+		}))).filter(([, exists]) => !!exists).map(([key]) => key)
+
+		const dependencies = _.difference(configDependenciesKeys, installedDependenciesKeys)
 
 		if (dependencies.length) {
-			dependencies = _.map(_.pick(config.dependencies, dependencies), getJoiner('@'))
-			console.log('npm install', dependencies)
-			if (semver.gt(npm.version(), '5.0.0')) {
-				// npm@^5.0.0 should install all deps
-				dependencies = _.map(config.dependencies, getJoiner('@'))
-			}
-
+			const wrapConfigDependencies = _.map(configDependencies, getJoiner('@'))
 			const registry = brickyard.argv.registry ? `--registry ${brickyard.argv.registry}` : ''
-			npm.install([registry, '--no-save', '--no-prune', ...dependencies])
+			npm.install([registry, '--no-save', '--no-prune', ...wrapConfigDependencies])
+		} else {
+			console.debug('npm all exists')
 		}
+	}
+})()
 
-		gulp.plugins = require('gulp-load-plugins')({ config })
-	},
-
-	copy_starter_to_dest: () => gulp.src(`${__dirname}/starter/index.js`).pipe(gulp.dest(brickyard.dirs.dest)),
-
-	async clean_buildtask_and_plan() {
-		const fse = require('fs-extra')
-		if (!brickyard.argv.debug && !brickyard.argv.watch) {
-			fse.removeSync(path.join(brickyard.dirs.modules, 'buildtask'))
-			fse.removeSync(path.join(brickyard.dirs.modules, 'plan'))
-			fse.removeSync(path.join(brickyard.dirs.dest, 'bower.json'))
-		}
-	},
+function copyStarterToDest() {
+	return gulp.src(`${__dirname}/starter/index.js`).pipe(gulp.dest(brickyard.dirs.dest))
 }
 
-const composedTasks = {
-	install_dependencies(cb) {
-		gulp.run_sequence(
-			'export_npm_config', 'npm_check_installed_npm_packages', 'npm_install', 'copy_starter_to_dest',
-			cb,
+async function cleanBuildtaskAndPlan() {
+	if (!brickyard.argv.debug && !brickyard.argv.watch) {
+		await Promise.all(
+			['buildtask', 'frontend', 'plan'].map(dir => fse.remove(path.join(brickyard.dirs.modules, dir))),
 		)
-	},
+	}
 }
 
-gulp.create_tasks(atomicTasks)
-gulp.create_tasks(composedTasks)
+gulp.create_tasks({
+	installDependencies: gulp.parallel(npmInstall, exportNpmConfig, copyStarterToDest),
+	cleanBuildtaskAndPlan,
+})
 
-gulp.register_sub_tasks('build', 0, 'install_dependencies')
-gulp.register_sub_tasks('build', 40, 'clean_buildtask_and_plan')
+gulp.register_sub_tasks('build', 0, 'installDependencies')
+gulp.register_sub_tasks('build', 40, 'cleanBuildtaskAndPlan')

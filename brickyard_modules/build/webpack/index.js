@@ -13,6 +13,7 @@ gulp.create_tasks({
 		}
 
 		const webpack = require('webpack')
+		const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 		const alias = {}
 		Object.keys(brickyard.modules.frontend).forEach((key) => {
@@ -24,6 +25,7 @@ gulp.create_tasks({
 			entry: `${brickyard.dirs.tempModules}/main.js`,
 			output: {
 				path: `${brickyard.dirs.dest}/www`,
+				filename: '[name].[chunkhash].js',
 			},
 			module: {
 				rules: [
@@ -38,6 +40,10 @@ gulp.create_tasks({
 				new webpack.ProvidePlugin({
 					$: 'jquery',
 					jQuery: 'jquery',
+				}),
+				new HtmlWebpackPlugin({
+					favicon: `${brickyard.dirs.dest}/www/favicon.ico`,
+					template: `${brickyard.dirs.dest}/www/index.html`,
 				}),
 			],
 			node: {
