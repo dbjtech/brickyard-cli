@@ -34,6 +34,7 @@ gulp.create_tasks({
 					{ test: /\.(html)$/, use: ['html-loader'] },
 					{ test: /\.css$/, use: ['style-loader', 'css-loader'] },
 					{ test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+					{ test: /\.(png|jpg|jpeg|gif)$/i, use: ['url-loader'] },
 					{ test: /\.js$/, exclude: /node_modules/, use: ['ng-annotate-loader'] },
 					{
 						test: /\.js$/,
