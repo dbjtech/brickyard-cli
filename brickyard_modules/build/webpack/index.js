@@ -74,12 +74,11 @@ gulp.create_tasks({
 		const info = stats.toJson()
 
 		if (stats.hasErrors()) {
-			console.error(info.errors)
 			throw new Error(info.errors)
 		}
 
 		if (stats.hasWarnings()) {
-			console.warn(info.warnings)
+			console.warn(...info.warnings)
 		}
 	},
 })
