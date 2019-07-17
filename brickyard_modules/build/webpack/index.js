@@ -13,6 +13,7 @@ gulp.create_tasks({
 		}
 
 		const webpack = require('webpack')
+		const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 		const alias = {}
 		Object.keys(brickyard.modules.frontend).forEach((key) => {
@@ -24,20 +25,39 @@ gulp.create_tasks({
 			entry: `${brickyard.dirs.tempModules}/main.js`,
 			output: {
 				path: `${brickyard.dirs.dest}/www`,
+				filename: '[name].js',
 			},
 			module: {
 				rules: [
-					{ test: /\.css$/, use: ['style-loader', 'css-loader'] },
 					{ test: /\.(woff|woff2|eot|ttf|otf)$/, use: ['file-loader'] },
 					{ test: /\.svg$/, use: ['svg-inline-loader'] },
 					{ test: /\.(html)$/, use: ['html-loader'] },
+					{ test: /\.css$/, use: ['style-loader', 'css-loader'] },
+					{ test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+					{ test: /\.(png|jpg|jpeg|gif)$/i, use: ['url-loader'] },
 					{ test: /\.js$/, exclude: /node_modules/, use: ['ng-annotate-loader'] },
+					{
+						test: /\.js$/,
+						exclude: /node_modules/,
+						use: {
+							loader: 'babel-loader',
+							options: {
+								presets: ['@babel/preset-env'],
+							},
+						},
+					},
+					{ test: require.resolve('jquery'), use: ['expose-loader?jQuery'] },
+					{ test: require.resolve('angular'), use: ['imports-loader?jQuery=jquery'] },
 				],
 			},
 			plugins: [
 				new webpack.ProvidePlugin({
 					$: 'jquery',
 					jQuery: 'jquery',
+				}),
+				new HtmlWebpackPlugin({
+					favicon: `${brickyard.dirs.dest}/www/favicon.ico`,
+					template: `${brickyard.dirs.dest}/www/index.html`,
 				}),
 			],
 			node: {
@@ -56,11 +76,11 @@ gulp.create_tasks({
 		const info = stats.toJson()
 
 		if (stats.hasErrors()) {
-			console.error(info.errors)
+			throw new Error(info.errors)
 		}
 
 		if (stats.hasWarnings()) {
-			console.warn(info.warnings)
+			console.warn(...info.warnings)
 		}
 	},
 })

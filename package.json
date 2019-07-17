@@ -1,6 +1,6 @@
 {
   "name": "brickyard-cli",
-  "version": "6.2.1",
+  "version": "6.4.1",
   "description": "",
   "main": "lib/brickyard",
   "bin": {

@@ -7,8 +7,10 @@ gulp.create_tasks({
 	 * 给所有的css代码自动添加浏览器前缀
 	 */
 	add_css_autoprefixer() {
+		const autoprefixer = require('gulp-autoprefixer')
+
 		return gulp.src(`${brickyard.dirs.temp}/**/*.css`, { base: brickyard.dirs.temp })
-			.pipe(gulp.plugins.autoprefixer('last 10 version', '> 1%', 'ie 9'))
+			.pipe(autoprefixer('last 10 version', '> 1%', 'ie 9'))
 			.pipe(gulp.dest(brickyard.dirs.temp))
 	},
 
@@ -16,13 +18,15 @@ gulp.create_tasks({
 	 * 压缩 css 文件
 	 */
 	minify_css(cb) {
+		const cleanCss = require('gulp-clean-css')
+
 		if (brickyard.config.debug) {
 			cb()
 			return undefined
 		}
 
 		return gulp.src([`${brickyard.dirs.temp}/**/*.css`, `!${brickyard.dirs.temp}/lib/**`])
-			.pipe(gulp.plugins.cleanCss({
+			.pipe(cleanCss({
 				// root: brickyard.dirs.temp,
 				debug: brickyard.config.debug,
 				compatibility: 'ie9',

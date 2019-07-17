@@ -8,6 +8,9 @@ gulp.create_tasks({
 	 * debug 模式下文件内置 sourceMap todo:好像不起作用
 	 */
 	'build-style-scss': () => {
+		// eslint-disable-next-line global-require
+		const sass = require('gulp-sass')
+
 		const styleConfig = brickyard.config.debug ? {
 			errLogToConsole: true,
 			outputStyle: 'nested',
@@ -20,7 +23,7 @@ gulp.create_tasks({
 		}
 
 		return gulp.src(`${brickyard.dirs.temp}/**/main.scss`, { base: brickyard.dirs.temp })
-			.pipe(gulp.plugins.sass(styleConfig))
+			.pipe(sass(styleConfig))
 			.pipe(gulp.dest(brickyard.dirs.temp))
 	},
 })
