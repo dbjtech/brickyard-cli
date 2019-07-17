@@ -46,6 +46,8 @@ gulp.create_tasks({
 							},
 						},
 					},
+					{ test: require.resolve('jquery'), use: ['expose-loader?jQuery'] },
+					{ test: require.resolve('angular'), use: ['imports-loader?jQuery=jquery'] },
 				],
 			},
 			plugins: [
