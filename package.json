@@ -1,10 +1,14 @@
 {
   "name": "brickyard-cli",
-  "version": "6.4.3",
+  "version": "6.4.5",
   "description": "",
   "main": "lib/brickyard",
   "bin": {
     "brickyard": "bin/index.js"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "ci": "npm run lint"
   },
   "repository": "dbjtech/brickyard-cli",
   "author": "vincentngthu",

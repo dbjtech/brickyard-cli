@@ -5,7 +5,7 @@ const _ = require('lodash')
 let server
 
 function getConfig() {
-	let config = brickyard.config['webpack-dev-server'] || {}
+	const config = brickyard.config['webpack-dev-server'] || {}
 
 	_.defaults(config, {
 		hot: true,
@@ -43,12 +43,12 @@ brickyard.events.on('build-webpack-config', (config) => {
 
 brickyard.events.on('build-webpack-dev-server', (compiler) => {
 	const express = require('express')
-	const webpackDevMiddleware = require("webpack-dev-middleware")
-	const webpackHotMiddleware = require("webpack-hot-middleware")
+	const webpackDevMiddleware = require('webpack-dev-middleware')
+	const webpackHotMiddleware = require('webpack-hot-middleware')
 	const proxy = require('http-proxy-middleware')
 	const morgan = require('morgan')
 
-	let config = getConfig()
+	const config = getConfig()
 	console.trace('init webpack-dev-server@', config.serverUrl)
 	server = express()
 	server.use(webpackDevMiddleware(compiler, {
@@ -94,7 +94,7 @@ brickyard.events.on('build-webpack-dev-server', (compiler) => {
 })
 
 brickyard.events.on('watch-frontend', () => {
-	let config = getConfig()
+	const config = getConfig()
 	server.listen(config.port, config.host, () => {
 		console.log(`webpack-dev-server start@${config.host}:${config.port}`)
 	})

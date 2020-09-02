@@ -69,7 +69,7 @@ function createBuilder(...options) {
 		}
 		return obj
 	}, {})
-	return args => args.options(opt)
+	return (args) => args.options(opt)
 }
 
 module.exports = yargs

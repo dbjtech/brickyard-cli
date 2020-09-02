@@ -6,9 +6,9 @@ if (rn.Platform.OS === 'web') {
 		addListener: () => {
 			console.log('hack Keyboard.addListener')
 			return {
-				remove: () => console.log('hack Keyboard.addListener(...).remove()')
+				remove: () => console.log('hack Keyboard.addListener(...).remove()'),
 			}
-		}
+		},
 	}
 	// rn.NativeModule = {}
 	// rn.NativeModule.UIManager = {

@@ -17,7 +17,6 @@ function tester(ext) {
 	}
 }
 
-
 brickyard.events.on('build-webpack-config', (config) => {
 	const ExtractTextPlugin = require('extract-text-webpack-plugin')
 	const etp = new ExtractTextPlugin('lib/style-scss.[contenthash:6].css')

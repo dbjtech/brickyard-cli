@@ -86,7 +86,7 @@ function copyStarterToDest() {
 async function cleanBuildtaskAndPlan() {
 	if (!brickyard.argv.debug && !brickyard.argv.watch) {
 		await Promise.all(
-			['buildtask', 'frontend', 'plan'].map(dir => fse.remove(path.join(brickyard.dirs.modules, dir))),
+			['buildtask', 'frontend', 'plan'].map((dir) => fse.remove(path.join(brickyard.dirs.modules, dir))),
 		)
 	}
 }
