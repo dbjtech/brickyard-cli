@@ -43,5 +43,4 @@ gulp.create_tasks({
 	},
 })
 
-
 gulp.register_sub_tasks('build', 23, 'build-style-minify')

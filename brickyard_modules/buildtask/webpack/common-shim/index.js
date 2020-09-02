@@ -1,16 +1,14 @@
-'use strict'
-
 const fs = require('fs')
 const _ = require('lodash')
 const brickyard = require('brickyard')
 const path = require('path')
 
-let base = brickyard.dirs.bower
+const base = brickyard.dirs.bower
 
-brickyard.events.on('build-webpack-config', function(config) {
+brickyard.events.on('build-webpack-config', (config) => {
 	_.defaultsDeep(config, { module: { loaders: [] } })
-	let npm_config = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/package.json`))
-	let bower_config = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/bower.json`))
+	const npm_config = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/package.json`))
+	const bower_config = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/bower.json`))
 	let dependencies = _.extend(npm_config.dependencies, npm_config.devDependencies)
 	dependencies = _.extend(npm_config.dependencies, bower_config.dependencies)
 	// console.log(dependencies)

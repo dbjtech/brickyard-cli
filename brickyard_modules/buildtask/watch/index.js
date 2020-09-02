@@ -10,7 +10,6 @@ const watchConfig = brickyard.argv.polling ? {
 	interval: typeof (brickyard.argv.polling) === 'number' ? brickyard.argv.polling : 1500,
 } : {}
 
-
 /**
  * 监听生成目录，一旦变更触发livereload插件的运行
  * @param cb
@@ -20,13 +19,13 @@ brickyard.events.once('watch-output', () => {
 	const livereload = require('gulp-livereload')
 	livereload.listen()
 	require('chokidar').watch(`${brickyard.dirs.dest}/www/`, watchConfig)
-		.on('change', _.debounce(path => livereload.changed(path), 500))
+		.on('change', _.debounce((path) => livereload.changed(path), 500))
 })
 
 // rebuild if plan/buildtask/backend codes update
 brickyard.events.once('watch-backend', () => {
-	const mds = _.filter(brickyard.modules, md => ['plan', 'buildtask', 'backend'].indexOf(md.type) !== -1)
-	const watchee = _.map(mds, md => `${md.path}/`)
+	const mds = _.filter(brickyard.modules, (md) => ['plan', 'buildtask', 'backend'].indexOf(md.type) !== -1)
+	const watchee = _.map(mds, (md) => `${md.path}/`)
 	console.log('watch plan, buildtask and backend modules', watchee)
 
 	const onChange = _.debounce((path) => {
@@ -39,8 +38,8 @@ brickyard.events.once('watch-backend', () => {
 
 // rebuild if frontend codes update
 brickyard.events.once('watch-frontend', () => {
-	const mds = _.filter(brickyard.modules, md => ['frontend'].indexOf(md.type) !== -1)
-	const watchee = _.map(mds, md => `${md.path}/`)
+	const mds = _.filter(brickyard.modules, (md) => ['frontend'].indexOf(md.type) !== -1)
+	const watchee = _.map(mds, (md) => `${md.path}/`)
 	console.log('watch frontend modules', watchee)
 
 	const onChange = _.debounce((path) => {

@@ -30,7 +30,7 @@ function tester(regex, include) {
 		let pretest = true
 		if ((include instanceof RegExp) && !include.test(absPath)) {
 			pretest = false
-		} else if (typeof(include) === 'string') {
+		} else if (typeof (include) === 'string') {
 			let full
 			full = path.isAbsolute(include) ? path.normalize(include) : path.join(process.cwd(), include)
 			pretest = absPath.indexOf(full) !== -1
