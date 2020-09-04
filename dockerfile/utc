@@ -1,5 +1,8 @@
 FROM node:alpine
 
-RUN npm i -g --production brickyard-cli@^5.1.0 && npm cache clean --force
+RUN apk add --no-cache python make g++
+
+RUN npm i -g --production brickyard-cli \
+  && npm cache clean --force
 
 CMD ["brickyard"]
