@@ -1,0 +1,12 @@
+{
+  "name": "backend-app-2",
+  "brickyard-module-type": "backend",
+  "version": "0.0.1",
+  "description": "backend for backend-app-2",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "brickyard-developer",
+  "license": "ISC"
+}

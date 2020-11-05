@@ -1,6 +1,6 @@
 module.exports = {
 	modules: [
-		'build/install',
+		'buildtask/install',
 		'buildtask/watch',
 	],
 	config: {

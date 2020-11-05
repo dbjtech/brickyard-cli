@@ -12,6 +12,7 @@
       "SwitchCase": 1
     }],
     "import/no-unresolved": 0,
+    "import/no-extraneous-dependencies": 0,
     "camelcase": 0,
     "no-tabs": 0
   }

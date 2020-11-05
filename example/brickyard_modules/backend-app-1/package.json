@@ -1,0 +1,9 @@
+{
+  "name": "backend-app-1",
+  "brickyard-module-type": "backend",
+  "version": "0.0.1",
+  "description": "backend for backend-app-1",
+  "main": "index.js",
+  "author": "brickyard-developer",
+  "license": "ISC"
+}
