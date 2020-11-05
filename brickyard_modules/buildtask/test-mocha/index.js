@@ -25,7 +25,7 @@ gulp.task('test_mocha', () => {
 	})
 
 	console.log('run test', test_scripts)
-	return gulp.src(test_scripts, { read: false }).pipe(gulp.plugins.mocha()).pipe(gulp.plugins.exit())
+	return gulp.src(test_scripts, { read: false }).pipe(gulp.plugins.mocha()).on('error', () => {}).pipe(gulp.plugins.exit())
 })
 
 gulp.register_sub_tasks('test', 0, 'test_mocha')
