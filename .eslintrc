@@ -1,6 +1,7 @@
 {
   "extends": "airbnb-base",
   "env": {
+    "mocha": true,
     "node": true
   },
   "rules": {
@@ -10,6 +11,8 @@
     "indent": [2, "tab", {
       "SwitchCase": 1
     }],
+    "import/no-unresolved": 0,
+    "import/no-extraneous-dependencies": 0,
     "camelcase": 0,
     "no-tabs": 0
   }

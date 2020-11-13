@@ -10,7 +10,9 @@ gulp.task('test_mocha', () => {
 		const script = plugin.scripts && plugin.scripts.test
 
 		if (!script) { return }
-		if (!_.isEmpty(brickyard.argv.modules) && brickyard.argv.modules.indexOf(plugin.name) === -1) { return }
+		if (!_.isEmpty(brickyard.argv.modules) && brickyard.argv.modules.indexOf(plugin.name) === -1) {
+			return
+		}
 
 		let split = script.split(/\s+/)
 		const cmd = split.shift() || ''
@@ -25,7 +27,8 @@ gulp.task('test_mocha', () => {
 	})
 
 	console.log('run test', test_scripts)
-	return gulp.src(test_scripts, { read: false }).pipe(gulp.plugins.mocha()).on('error', () => {}).pipe(gulp.plugins.exit())
+	const main = path.join(brickyard.dirs.dest, 'index.js')
+	return gulp.src(test_scripts, { read: false }).pipe(gulp.plugins.mocha({ require: [main] })).on('error', () => {}).pipe(gulp.plugins.exit())
 })
 
 gulp.register_sub_tasks('test', 0, 'test_mocha')

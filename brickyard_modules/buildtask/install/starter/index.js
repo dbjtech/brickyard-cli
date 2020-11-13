@@ -6,8 +6,4 @@ hack.logWithLevel(0) // INFO
 
 brickyard.ensureVersion('4.2.0')
 brickyard.loadRuntime({ dir: __dirname, ...yargs.argv })
-	.then(() => brickyard.sendSignals('run'))
-	.catch((e) => {
-		console.error(e.stack)
-		process.exit(1)
-	})
+brickyard.sendSignals('run')

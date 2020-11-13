@@ -8,9 +8,7 @@ const base = brickyard.dirs.bower
 brickyard.events.on('build-webpack-config', (config) => {
 	_.defaultsDeep(config, { module: { loaders: [] } })
 	const npm_config = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/package.json`))
-	const bower_config = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/bower.json`))
-	let dependencies = _.extend(npm_config.dependencies, npm_config.devDependencies)
-	dependencies = _.extend(npm_config.dependencies, bower_config.dependencies)
+	const dependencies = _.extend(npm_config.dependencies, npm_config.devDependencies)
 	// console.log(dependencies)
 	if (dependencies.jquery) {
 		config.module.loaders.push({
@@ -38,6 +36,7 @@ brickyard.events.on('build-webpack-config', (config) => {
 		})
 	}
 	if (dependencies.ztree_v3) {
+		// eslint-disable-next-line no-param-reassign
 		config.resolve.alias.ztree_v3 = path.join(base, 'ztree_v3/js/jquery.ztree.all.js')
 	}
 	if (dependencies.wowjs) {

@@ -56,21 +56,6 @@ const tasks = {
 			alias[`@brickyard/${pid}`] = modulePath
 			alias[`@brickyard\\${pid}`] = modulePath
 		})
-		// bower
-		const bower_conf = JSON.parse(fs.readFileSync(`${brickyard.dirs.dest}/bower.json`))
-		const bower_plugins = brickyard.scanBowerModules()
-
-		_.each(bower_plugins, (plugin, pid) => {
-			if (bower_conf.dependencies[pid] && plugin.main) {
-				try {
-					require.resolve(pid)
-				} catch (e) {
-					console.debug(pid, 'is not in node_modules, use bower_components')
-					alias[pid] = join_cwd_if_relative(plugin.mainDest || plugin.main)
-				}
-			}
-		})
-		// console.debug('webpack config alias', alias)
 	},
 
 	async webpack_config() {

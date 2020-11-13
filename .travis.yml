@@ -2,24 +2,18 @@ language: node_js
 
 node_js:
   - "node"
-  - "12.0.0"
-  - "11.0.0"
-  - "10.0.0"
+  - "15.1.0"
+  - "12.16.1"
+  - "10.22.1"
 
 before_script:
   - npm i . -g
 
 script:
-  - brickyard create-module buildtask brickyard_modules/build-test
-  - echo "const brickyard=require('brickyard'); const gulp=require('gulp'); brickyard.ensureVersion('3.2.1'); gulp.task('a-build-task', ()=>console.log('building')); gulp.register_sub_tasks('build',0,'a-build-task'); gulp.task('a-run-task', ()=>brickyard.events.emit('run')); gulp.register_sub_tasks('run',0,'a-run-task');" > brickyard_modules/build-test/index.js
-  - brickyard create-module plan brickyard_modules/plan-test
-  - echo "module.exports={modules:['backend-test','build-test']}" > brickyard_modules/plan-test/index.js
-  - brickyard create-module backend brickyard_modules/backend-test
-  - echo "require('brickyard').events.on('run', ()=>console.log('running'))" > brickyard_modules/backend-test/index.js
+  - cd example
   - brickyard ls
-  - brickyard ls plan-test
-  - brickyard build plan-test
-  - brickyard run output
+  - brickyard ls backend-plan
+  - brickyard test mocha backend-plan
+  - brickyard build backend-plan --run
   - cd output
-  - brickyard run .
-  - cd ..
+  - node .

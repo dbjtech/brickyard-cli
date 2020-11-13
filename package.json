@@ -1,12 +1,13 @@
 {
   "name": "brickyard-cli",
-  "version": "6.4.7",
+  "version": "7.0.1",
   "description": "",
   "main": "lib/brickyard",
   "bin": {
     "brickyard": "bin/index.js"
   },
   "scripts": {
+    "publish": "npm publish --registry https://registry.npmjs.org", 
     "lint": "eslint .",
     "ci": "npm run lint"
   },
@@ -28,8 +29,8 @@
     "yargs": "^13.2.4"
   },
   "devDependencies": {
+    "eslint": "^7.12.1",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint": "^7.8.0",
-    "eslint-plugin-import": "^2.22.0"
+    "eslint-plugin-import": "^2.22.1"
   }
 }

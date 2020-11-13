@@ -1,7 +1,6 @@
+/* eslint-disable global-require */
 const fs = require('fs')
 const util = require('util')
-/* eslint-disable import/no-extraneous-dependencies, import/no-unresolved */
-/* eslint-disable global-require, no-param-reassign */
 const gulp = require('gulp')
 
 const brickyard = require('brickyard')

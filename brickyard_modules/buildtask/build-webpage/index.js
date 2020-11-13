@@ -31,22 +31,6 @@ gulp.create_tasks({
 	},
 
 	/**
-	 * 将 bower component 的相关资源文件复制到临时目录下
-	 */
-	build_bower_temp: () => {
-		const changed = require('gulp-changed')
-		return gulp
-			.src([
-				`${brickyard.dirs.dest}/bower_components/jquery/dist/jquery.min.js`, // for admin shop plugin
-				`${brickyard.dirs.dest}/bower_components/**/*.{gif,jpg,jpeg,png,ico,css,map,sass,scss}`,
-				`${brickyard.dirs.dest}/bower_components/**/fonts/**`,
-				`!${brickyard.dirs.dest}/bower_components/**/@(example|examples|docs|test|dev){,/**}`,
-			], { base: brickyard.dirs.bower })
-			.pipe(changed(tempLibDir))
-			.pipe(gulp.dest(tempLibDir))
-	},
-
-	/**
 	 * 清空临时目录
 	 */
 	clean_frontend_temp: async () => {
@@ -60,7 +44,7 @@ gulp.create_tasks({
 // composed tasks
 gulp.create_tasks({
 	'build-webpage': (cb) => {
-		gulp.run_sequence('build_bower_temp', 'build_frontend_plugins_temp', cb)
+		gulp.run_sequence('build_frontend_plugins_temp', cb)
 	},
 })
 
