@@ -19,7 +19,7 @@ gulp.create_tasks({
 			alias[key] = `${brickyard.dirs.tempModules}/${brickyard.modules.frontend[key].name}/`
 		})
 
-		const compiler = webpack({
+		const webpackConfig = {
 			mode: brickyard.config.debug ? 'development' : 'production',
 			entry: `${brickyard.dirs.tempModules}/main.js`,
 			output: {
@@ -66,7 +66,9 @@ gulp.create_tasks({
 			resolve: {
 				alias,
 			},
-		})
+		}
+		process.emit('build-webpack-config', webpackConfig)
+		const compiler = webpack(webpackConfig)
 
 		const runAsync = util.promisify(compiler.run).bind(compiler)
 
@@ -75,11 +77,12 @@ gulp.create_tasks({
 		const info = stats.toJson()
 
 		if (stats.hasErrors()) {
-			throw new Error(info.errors)
+			info.errors.map((e) => console.error(e))
+			throw new Error('webpack build error')
 		}
 
 		if (stats.hasWarnings()) {
-			console.warn(...info.warnings)
+			info.warnings.map((e) => console.warn(e))
 		}
 	},
 })
