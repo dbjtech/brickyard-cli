@@ -1,13 +1,13 @@
 {
   "name": "brickyard-cli",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "description": "",
   "main": "lib/brickyard",
   "bin": {
     "brickyard": "bin/index.js"
   },
   "scripts": {
-    "publish": "npm publish --registry https://registry.npmjs.org", 
+    "pub": "npm publish --registry https://registry.npmjs.org", 
     "lint": "eslint .",
     "ci": "npm run lint"
   },
