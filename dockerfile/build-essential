@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:14-alpine
 
 RUN apk add tzdata --update --no-cache \
   && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
